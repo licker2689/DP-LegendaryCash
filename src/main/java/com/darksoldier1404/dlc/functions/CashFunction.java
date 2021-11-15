@@ -108,4 +108,11 @@ public class CashFunction {
         p.sendMessage(plugin.prefix + "보유 마일리지 : " + mileage);
     }
 
+    public static boolean isOpen(Player p) {
+        return plugin.udata.get(p.getUniqueId()).getBoolean("Player.SHOW");
+    }
+
+    public static void setOpen(Player p, boolean b) {
+        plugin.udata.get(p.getUniqueId()).set("Player.SHOW", b);
+    }
 }
