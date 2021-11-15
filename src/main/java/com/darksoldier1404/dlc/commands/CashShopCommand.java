@@ -37,28 +37,28 @@ public class CashShopCommand implements CommandExecutor, TabCompleter {
                 return false;
             }
         }
-        if (!p.isOp()) {
-            if (args[0].equals("오픈")) {
-                if (args.length == 1) {
-                    p.sendMessage(prefix + "상점 이름을 입력해주세요!");
-                    return false;
-                }
-//                CashShopFunction.openShop(p, args[1]);
+
+        if (args[0].equals("오픈")) {
+            if (args.length == 1) {
+                p.sendMessage(prefix + "상점 이름을 입력해주세요!");
                 return false;
             }
-            if (args[0].equals("목록")) {
-                LegendaryCash.getInstance().shops.keySet().forEach(s -> p.sendMessage(prefix + s));
-                return false;
-            }
-        } else {
+            CashShopFunction.openShop(p, args[1]);
+            return false;
+        }
+        if (args[0].equals("목록")) {
+            LegendaryCash.getInstance().shops.keySet().forEach(s -> p.sendMessage(prefix + s));
+            return false;
+        }
+        if (p.isOp()) {
             if (args[0].equals("생성")) {
                 if (args.length == 1) {
                     p.sendMessage(prefix + "상점 이름을 입력해주세요!");
                     return false;
                 }
-                if(ShopConfigUtil.createShop(args[1])) {
-                    p.sendMessage(prefix + args[1]+" 캐시상점이 생성되었습니다.");
-                }else{
+                if (ShopConfigUtil.createShop(args[1])) {
+                    p.sendMessage(prefix + args[1] + " 캐시상점이 생성되었습니다.");
+                } else {
                     p.sendMessage(prefix + args[1] + "캐시상점은 이미 존재합니다.");
                 }
                 return false;
@@ -71,53 +71,55 @@ public class CashShopCommand implements CommandExecutor, TabCompleter {
                 CashShopFunction.openShopShowCase(p, args[1]);
                 return false;
             }
-            if(args[0].equals("가격")) {
+            if (args[0].equals("가격")) {
                 if (args.length == 1) {
                     p.sendMessage(prefix + "상점 이름을 입력해주세요!");
                     return false;
                 }
-                if(args.length == 2) {
+                if (args.length == 2) {
                     p.sendMessage(prefix + "설정할 가격 종류를 입력해주세요. C/M");
                     return false;
                 }
-                if(args.length == 3) {
-                    p.sendMessage(prefix + "슬롯의 번호를 입력해주세요. 1~54");
+                if (args.length == 3) {
+                    p.sendMessage(prefix + "슬롯의 번호를 입력해주세요. 0~53");
                     return false;
                 }
-                if(args.length == 4) {
+                if (args.length == 4) {
                     p.sendMessage(prefix + "설정할 가격을 입력해주세요.");
                     return false;
                 }
                 //p.sendMessage(prefix + "/캐시상점 가격 <상점이름> <C/M> <슬롯> <가격> - 해당 캐시상점의 해당 슬롯의 아이템의 가격을 설정합니다.");
-                if(!LegendaryCash.getInstance().shops.containsKey(args[1])){
+                if (!LegendaryCash.getInstance().shops.containsKey(args[1])) {
                     p.sendMessage(prefix + "존재하지 않는 캐시상점 입니다.");
-                }else{
-                    if(args[2].equalsIgnoreCase("c")) {
-                        try{
+                } else {
+                    if (args[2].equalsIgnoreCase("c")) {
+                        try {
                             int slot = Integer.parseInt(args[3]);
-                            try{
+                            try {
                                 double price = Double.parseDouble(args[4]);
                                 CashShopFunction.setShopCashPrice(p, slot, price, args[1]);
-                            }catch(Exception e) {
+                                return false;
+                            } catch (Exception e) {
                                 p.sendMessage(prefix + "옳바른 가격을 입력해주세요.");
                                 return false;
                             }
-                        }catch(Exception e){
+                        } catch (Exception e) {
                             p.sendMessage(prefix + "옳바른 슬롯 번호를 입력해주세요.");
                             return false;
                         }
                     }
-                    if(args[2].equalsIgnoreCase("c")) {
-                        try{
+                    if (args[2].equalsIgnoreCase("m")) {
+                        try {
                             int slot = Integer.parseInt(args[3]);
-                            try{
+                            try {
                                 double price = Double.parseDouble(args[4]);
                                 CashShopFunction.setShopMileagePrice(p, slot, price, args[1]);
-                            }catch(Exception e) {
+                                return false;
+                            } catch (Exception e) {
                                 p.sendMessage(prefix + "옳바른 가격을 입력해주세요.");
                                 return false;
                             }
-                        }catch(Exception e){
+                        } catch (Exception e) {
                             p.sendMessage(prefix + "옳바른 슬롯 번호를 입력해주세요.");
                             return false;
                         }
@@ -126,19 +128,19 @@ public class CashShopCommand implements CommandExecutor, TabCompleter {
                     return false;
                 }
             }
-            if(args[0].equals("삭제")) {
+            if (args[0].equals("삭제")) {
                 if (args.length == 1) {
                     p.sendMessage(prefix + "상점 이름을 입력해주세요!");
                     return false;
                 }
-                if(ShopConfigUtil.deleteShop(args[1])) {
+                if (ShopConfigUtil.deleteShop(args[1])) {
                     p.sendMessage(prefix + args[1] + "캐시상점이 삭제되었습니다.");
-                }else{
+                } else {
                     p.sendMessage(prefix + args[1] + "캐시상점은 존재하지 않습니다.");
                     return false;
                 }
             }
-            if(args[0].equals("리로드") || args[0].equals("rl")) {
+            if (args[0].equals("리로드") || args[0].equals("rl")) {
                 ConfigUtils.reloadConfig();
                 ShopConfigUtil.loadAllShop();
                 p.sendMessage(prefix + "콘피그 파일과 캐시상점 파일을 리로드 하였습니다.");

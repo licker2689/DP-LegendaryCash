@@ -66,18 +66,14 @@ public class CashCommand implements CommandExecutor, TabCompleter {
         }
         if (args[0].equalsIgnoreCase("송금")) {
             if (args.length == 1) {
-                p.sendMessage(prefix + "§c사용법 : /캐시 송금 <C/M> <닉네임> <금액>");
-                return false;
-            }
-            if (args.length == 2) {
                 p.sendMessage(prefix + "송금할 자금 종류를 입력해주세요! <C/M>");
                 return false;
             }
-            if(args.length == 3) {
+            if(args.length == 2) {
                 p.sendMessage(prefix + "송금할 대상의 닉네임을 입력해주세요!");
                 return false;
             }
-            if(args.length == 4) {
+            if(args.length == 3) {
                 p.sendMessage(prefix + "송금할 금액을 입력해주세요!");
                 return false;
             }

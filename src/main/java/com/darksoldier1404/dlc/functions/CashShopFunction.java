@@ -26,11 +26,11 @@ public class CashShopFunction {
     }
 
     public static double getCashPrice(ItemStack item) {
-        return Double.parseDouble(NBT.getStringTag(item, "cash"));
+        return Double.parseDouble(NBT.getStringTag(item, "cash").replace('"', ' ').trim());
     }
 
     public static double getMileagePrice(ItemStack item) {
-        return Double.parseDouble(NBT.getStringTag(item, "mileage"));
+        return Double.parseDouble(NBT.getStringTag(item, "mileage").replace('"', ' ').trim());
     }
 
     public static boolean isDLC(ItemStack item) {
@@ -42,8 +42,10 @@ public class CashShopFunction {
         plugin.currentEditShop.put(p.getUniqueId(), name);
         Inventory inv = Bukkit.createInventory(null, 54, "§1" + name + " 캐시상점 진열");
         YamlConfiguration shop = plugin.shops.get(name);
-        for (String key : shop.getConfigurationSection("Shop.Items").getKeys(false)) {
-            inv.setItem(Integer.parseInt(key), shop.getItemStack("Shop.Items." + key));
+        if(shop.getConfigurationSection("Shop.Items") != null) {
+            for (String key : shop.getConfigurationSection("Shop.Items").getKeys(false)) {
+                inv.setItem(Integer.parseInt(key), shop.getItemStack("Shop.Items." + key));
+            }
         }
         p.openInventory(inv);
     }
@@ -64,7 +66,7 @@ public class CashShopFunction {
     public static void setShopCashPrice(Player p, int slot, double cash, String name) {
         YamlConfiguration shop = plugin.shops.get(name);
         if (shop.getItemStack("Shop.Items." + slot) != null) {
-            shop.set("Shop.Items." + slot + ".cash", cash);
+            shop.set("Shop.Prices." + slot + ".cash", cash);
             ConfigUtils.saveData(name, "shops", shop);
             p.sendMessage(plugin.prefix + "§a캐시 가격이 설정되었습니다. : " + cash + " 캐시");
         } else {
@@ -75,7 +77,7 @@ public class CashShopFunction {
     public static void setShopMileagePrice(Player p, int slot, double mileage, String name) {
         YamlConfiguration shop = plugin.shops.get(name);
         if (shop.getItemStack("Shop.Items." + slot) != null) {
-            shop.set("Shop.Items." + slot + ".mileage", mileage);
+            shop.set("Shop.Prices." + slot + ".mileage", mileage);
             ConfigUtils.saveData(name, "shops", shop);
             p.sendMessage(plugin.prefix + "§a마일리지 가격이 설정되었습니다. : " + mileage + " 마일리지");
         } else {
@@ -99,7 +101,10 @@ public class CashShopFunction {
             return;
         }
         CashFunction.takeCash(p, cash);
-        p.getInventory().addItem(item);
+        ItemStack r = item.clone();
+        r = NBT.removeTag(r, "cash");
+        r = NBT.removeTag(r, "mileage");
+        p.getInventory().addItem(r);
         p.sendMessage(plugin.prefix + "§a구매에 성공하였습니다.");
     }
 
@@ -119,7 +124,36 @@ public class CashShopFunction {
             return;
         }
         CashFunction.takeMileage(p, mileage);
-        p.getInventory().addItem(item);
+        ItemStack r = item.clone();
+        r = NBT.removeTag(r, "cash");
+        r = NBT.removeTag(r, "mileage");
+        p.getInventory().addItem(r);
         p.sendMessage(plugin.prefix + "§a구매에 성공하였습니다.");
+    }
+
+    public static void openShop(Player p, String name) {
+        if(!plugin.shops.containsKey(name)) {
+            p.sendMessage(plugin.prefix + "§c존재하지 않는 캐시상점 입니다.");
+            return;
+        }
+        Inventory inv = Bukkit.createInventory(null, 54, "§1" + name + " 캐시상점 아이템 목록");
+        YamlConfiguration shop = plugin.shops.get(name);
+        if(shop.getConfigurationSection("Shop.Items") != null) {
+            for (String key : shop.getConfigurationSection("Shop.Items").getKeys(false)) {
+                ItemStack item = shop.getItemStack("Shop.Items." + key);
+                if(shop.getString("Shop.Prices." + key + ".cash") == null || shop.getInt("Shop.Prices." + key + ".cash") == -1) {
+                    item = NBT.setTag(item, "cash", -1);
+                }else{
+                    item = NBT.setTag(item, "cash", shop.getString("Shop.Prices." + key + ".cash"));
+                }
+                if(shop.getString("Shop.Prices." + key + ".mileage") == null || shop.getInt("Shop.Prices." + key + ".mileage") == -1) {
+                    item = NBT.setTag(item, "mileage", -1);
+                }else{
+                    item = NBT.setTag(item, "mileage", shop.getString("Shop.Prices." + key + ".mileage"));
+                }
+                inv.setItem(Integer.parseInt(key), item);
+            }
+        }
+        p.openInventory(inv);
     }
 }

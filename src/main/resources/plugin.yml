@@ -1,5 +1,5 @@
 name: DS-LegendaryCash
-version: 1.0.0.3
+version: 1.0.0.17
 main: com.darksoldier1404.dlc.LegendaryCash
 api-version: 1.17
 authors: [ DEAD_POOLIO_ ]
@@ -9,7 +9,5 @@ commands:
   캐시:
     permission: dlc.use
     aliases: [ cash ]
-    usage: /캐시
   캐시상점:
     aliases: [ cashshop ]
-    usage: /캐시상점
