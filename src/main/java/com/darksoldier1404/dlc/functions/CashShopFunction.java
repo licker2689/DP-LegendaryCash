@@ -31,4 +31,6 @@ public class CashShopFunction {
         return NBT.hasTagKey(item, "cash");
     }
 
+
+
 }

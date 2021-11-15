@@ -1,11 +1,13 @@
 package com.darksoldier1404.dlc.utils;
 
 import com.darksoldier1404.dlc.LegendaryCash;
+import com.google.common.collect.Lists;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import java.util.UUID;
 
 public class ConfigUtils {
@@ -38,6 +40,47 @@ public class ConfigUtils {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public static void saveData(String key, String path, YamlConfiguration data) {
+        try {
+            data.save(new File(plugin.getDataFolder() + "/" + path, key + ".yml"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void deleteData(String key, String path) {
+        File file = new File(plugin.getDataFolder() + "/" + path, key + ".yml");
+        if (file.exists()) {
+            file.delete();
+        }
+    }
+
+    public static YamlConfiguration getData(String key, String path) {
+        File file = new File(plugin.getDataFolder() + "/" + path, key + ".yml");
+        if (!file.exists()) {
+            return null;
+        }
+        return YamlConfiguration.loadConfiguration(file);
+    }
+
+    public static List<YamlConfiguration> getData(String path) {
+        File file = new File(plugin.getDataFolder() + "/" + path);
+        if (!file.exists()) {
+            return null;
+        }
+        File[] files = file.listFiles();
+        if (files == null) {
+            return null;
+        }
+        List<YamlConfiguration> list = Lists.newArrayList();
+        for (File f : files) {
+            YamlConfiguration data = YamlConfiguration
+                    .loadConfiguration(new File(plugin.getDataFolder() + "/" + path, f.getName()));
+            list.add(data);
+        }
+        return list;
     }
 
     public static void quitAndSaveData(UUID uuid) {
