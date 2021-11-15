@@ -83,7 +83,8 @@ public class CashShopFunction {
         }
     }
 
-    public static void buyWithCash(Player p, int slot, ItemStack item) {
+    public static void buyWithCash(Player p, ItemStack item) {
+        if(item == null) return;
         if (NBT.getStringTag(item, "cash") == null || NBT.getStringTag(item, "cash").contains("-1")) {
             p.sendMessage(plugin.prefix + "§c캐시로 구매할 수 없습니다.");
             return;
@@ -102,7 +103,8 @@ public class CashShopFunction {
         p.sendMessage(plugin.prefix + "§a구매에 성공하였습니다.");
     }
 
-    public static void buyWithMileage(Player p, int slot, ItemStack item) {
+    public static void buyWithMileage(Player p, ItemStack item) {
+        if(item == null) return;
         if (NBT.getStringTag(item, "mileage") == null || NBT.getStringTag(item, "mileage").contains("-1")) {
             p.sendMessage(plugin.prefix + "§c마일리지로 구매할 수 없습니다.");
             return;
