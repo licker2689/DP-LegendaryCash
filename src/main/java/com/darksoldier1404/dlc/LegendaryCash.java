@@ -1,5 +1,8 @@
 package com.darksoldier1404.dlc;
 
+import com.darksoldier1404.dlc.commands.CashCommand;
+import com.darksoldier1404.dlc.commands.CashShopCommand;
+import com.darksoldier1404.dlc.events.DLCEvent;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -13,6 +16,7 @@ public class LegendaryCash extends JavaPlugin {
     public YamlConfiguration config;
     public Map<UUID, YamlConfiguration> udata = new HashMap<>();
     public Map<String, YamlConfiguration> shops = new HashMap<>();
+    public Map<UUID, String> currentEditShop = new HashMap<>();
 
     public static LegendaryCash getInstance() {
         return plugin;
@@ -22,6 +26,9 @@ public class LegendaryCash extends JavaPlugin {
     public void onEnable() {
         plugin = this;
         getLogger().info("LegendaryCash has been enabled!");
+        plugin.getServer().getPluginManager().registerEvents(new DLCEvent(), plugin);
+        getCommand("캐시").setExecutor(new CashCommand());
+        getCommand("캐시상점").setExecutor(new CashShopCommand());
     }
 
     public void onDisable() {

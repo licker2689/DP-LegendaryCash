@@ -1,7 +1,13 @@
 package com.darksoldier1404.dlc.functions;
 
 import com.darksoldier1404.dlc.LegendaryCash;
+import com.darksoldier1404.dlc.utils.ConfigUtils;
 import com.darksoldier1404.dlc.utils.NBT;
+import com.darksoldier1404.dlc.utils.ShopConfigUtil;
+import org.bukkit.Bukkit;
+import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 public class CashShopFunction {
@@ -32,5 +38,88 @@ public class CashShopFunction {
     }
 
 
+    public static void openShopShowCase(Player p, String name) {
+        plugin.currentEditShop.put(p.getUniqueId(), name);
+        Inventory inv = Bukkit.createInventory(null, 54, "§1" + name + " 캐시상점 진열");
+        YamlConfiguration shop = plugin.shops.get(name);
+        for (String key : shop.getConfigurationSection("Shop.Items").getKeys(false)) {
+            inv.setItem(Integer.parseInt(key), shop.getItemStack("Shop.Items." + key));
+        }
+        p.openInventory(inv);
+    }
 
+    public static void saveShopShowCase(Player p, Inventory inv) {
+        String name = plugin.currentEditShop.get(p.getUniqueId());
+        YamlConfiguration shop = plugin.shops.get(name);
+        for (int i = 0; i < inv.getSize(); i++) {
+            if (inv.getItem(i) != null) {
+                shop.set("Shop.Items." + i, inv.getItem(i));
+            }
+        }
+
+        ConfigUtils.saveData(name, "shops", shop);
+        plugin.currentEditShop.remove(p.getUniqueId());
+    }
+
+    public static void setShopCashPrice(Player p, int slot, double cash, String name) {
+        YamlConfiguration shop = plugin.shops.get(name);
+        if (shop.getItemStack("Shop.Items." + slot) != null) {
+            shop.set("Shop.Items." + slot + ".cash", cash);
+            ConfigUtils.saveData(name, "shops", shop);
+            p.sendMessage(plugin.prefix + "§a캐시 가격이 설정되었습니다. : " + cash + " 캐시");
+        } else {
+            p.sendMessage(plugin.prefix + "§c해당 슬롯에는 진열된 아이템이 없습니다.");
+        }
+    }
+
+    public static void setShopMileagePrice(Player p, int slot, double mileage, String name) {
+        YamlConfiguration shop = plugin.shops.get(name);
+        if (shop.getItemStack("Shop.Items." + slot) != null) {
+            shop.set("Shop.Items." + slot + ".mileage", mileage);
+            ConfigUtils.saveData(name, "shops", shop);
+            p.sendMessage(plugin.prefix + "§a마일리지 가격이 설정되었습니다. : " + mileage + " 마일리지");
+        } else {
+            p.sendMessage(plugin.prefix + "§c해당 슬롯에는 진열된 아이템이 없습니다.");
+        }
+    }
+
+    public static void buyWithCash(Player p, ItemStack item) {
+        if(item == null) return;
+        if (NBT.getStringTag(item, "cash") == null || NBT.getStringTag(item, "cash").contains("-1")) {
+            p.sendMessage(plugin.prefix + "§c캐시로 구매할 수 없습니다.");
+            return;
+        }
+        double cash = getCashPrice(item);
+        if (p.getInventory().firstEmpty() == -1) {
+            p.sendMessage(plugin.prefix + "§c인벤토리 공간이 부족합니다.");
+            return;
+        }
+        if (!CashFunction.isEnoughCash(p, cash)) {
+            p.sendMessage(plugin.prefix + "§c캐시가 부족합니다.");
+            return;
+        }
+        CashFunction.takeCash(p, cash);
+        p.getInventory().addItem(item);
+        p.sendMessage(plugin.prefix + "§a구매에 성공하였습니다.");
+    }
+
+    public static void buyWithMileage(Player p, ItemStack item) {
+        if(item == null) return;
+        if (NBT.getStringTag(item, "mileage") == null || NBT.getStringTag(item, "mileage").contains("-1")) {
+            p.sendMessage(plugin.prefix + "§c마일리지로 구매할 수 없습니다.");
+            return;
+        }
+        double mileage = getMileagePrice(item);
+        if (p.getInventory().firstEmpty() == -1) {
+            p.sendMessage(plugin.prefix + "§c인벤토리 공간이 부족합니다.");
+            return;
+        }
+        if (!CashFunction.isEnoughMileage(p, mileage)) {
+            p.sendMessage(plugin.prefix + "§c마일리지가 부족합니다.");
+            return;
+        }
+        CashFunction.takeMileage(p, mileage);
+        p.getInventory().addItem(item);
+        p.sendMessage(plugin.prefix + "§a구매에 성공하였습니다.");
+    }
 }
