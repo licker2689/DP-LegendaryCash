@@ -26,7 +26,7 @@ public class CashFunction {
         plugin.udata.get(p.getUniqueId()).set("Player.MILEAGE", mileage);
     }
 
-    public static boolean removeCash(Player p, double amount) {
+    public static boolean takeCash(Player p, double amount) {
         double cash = getCash(p);
         if (cash - amount >= 0) {
             cash -= amount;
@@ -38,7 +38,7 @@ public class CashFunction {
         }
     }
 
-    public static boolean removeMileage(Player p, double amount) {
+    public static boolean takeMileage(Player p, double amount) {
         double mileage = getMileage(p);
         if (mileage - amount >= 0) {
             mileage -= amount;
@@ -81,7 +81,7 @@ public class CashFunction {
     public static void sendCash(Player sender, Player receiver, double amount) {
         if (isEnoughCash(sender, amount)) {
             addCash(receiver, amount);
-            removeCash(sender, amount);
+            takeCash(sender, amount);
             sender.sendMessage(plugin.prefix + amount + "캐시를 " + receiver.getName() + "에게 송금했습니다.");
         }else{
             sender.sendMessage(plugin.prefix + "캐시가 부족합니다.");
@@ -91,7 +91,7 @@ public class CashFunction {
     public static void sendMileage(Player sender, Player receiver, double amount) {
         if (isEnoughMileage(sender, amount)) {
             addMileage(receiver, amount);
-            removeMileage(sender, amount);
+            takeMileage(sender, amount);
             sender.sendMessage(plugin.prefix + amount + "마일리지를 " + receiver.getName() + "에게 송금했습니다.");
         }else{
             sender.sendMessage(plugin.prefix + "마일리지가 부족합니다.");

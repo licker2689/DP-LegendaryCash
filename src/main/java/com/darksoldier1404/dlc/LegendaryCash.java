@@ -16,6 +16,7 @@ public class LegendaryCash extends JavaPlugin {
     public YamlConfiguration config;
     public Map<UUID, YamlConfiguration> udata = new HashMap<>();
     public Map<String, YamlConfiguration> shops = new HashMap<>();
+    public Map<UUID, String> currentEditShop = new HashMap<>();
 
     public static LegendaryCash getInstance() {
         return plugin;

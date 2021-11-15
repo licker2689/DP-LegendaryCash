@@ -2,6 +2,7 @@ package com.darksoldier1404.dlc.commands;
 
 import com.darksoldier1404.dlc.LegendaryCash;
 import com.darksoldier1404.dlc.functions.CashShopFunction;
+import com.darksoldier1404.dlc.utils.ShopConfigUtil;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -54,7 +55,11 @@ public class CashShopCommand implements CommandExecutor, TabCompleter {
                     p.sendMessage(prefix + "상점 이름을 입력해주세요!");
                     return false;
                 }
-//                CashShopFunction.createShop(args[1]);
+                if(ShopConfigUtil.createShop(args[1])) {
+                    p.sendMessage(prefix + args[1]+" 캐시상점이 생성되었습니다.");
+                }else{
+                    p.sendMessage(prefix + args[1] + "캐시상점은 이미 존재합니다.");
+                }
                 return false;
             }
             if (args[0].equals("진열")) {
@@ -62,7 +67,7 @@ public class CashShopCommand implements CommandExecutor, TabCompleter {
                     p.sendMessage(prefix + "상점 이름을 입력해주세요!");
                     return false;
                 }
-//                CashShopFunction.openShopShowCase(args[1]);
+                CashShopFunction.openShopShowCase(p, args[1]);
                 return false;
             }
             if(args[0].equals("가격")) {
@@ -71,6 +76,18 @@ public class CashShopCommand implements CommandExecutor, TabCompleter {
                     return false;
                 }
 
+            }
+            if(args[0].equals("삭제")) {
+                if (args.length == 1) {
+                    p.sendMessage(prefix + "상점 이름을 입력해주세요!");
+                    return false;
+                }
+                if(ShopConfigUtil.deleteShop(args[1])) {
+                    p.sendMessage(prefix + args[1] + "캐시상점이 삭제되었습니다.");
+                }else{
+                    p.sendMessage(prefix + args[1] + "캐시상점은 존재하지 않습니다.");
+                    return false;
+                }
             }
         }
 
