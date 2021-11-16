@@ -60,25 +60,19 @@ public class CashFunction {
 
     public static boolean isEnoughCash(Player p, double amount) {
         double cash = getCash(p);
-        if (cash - amount >= 0) {
-            return true;
-        }else{
-            p.sendMessage(plugin.prefix + "캐시가 부족합니다.");
-            return false;
-        }
+        return cash - amount >= 0;
     }
 
     public static boolean isEnoughMileage(Player p, double amount) {
         double mileage = getMileage(p);
-        if (mileage - amount >= 0) {
-            return true;
-        }else{
-            p.sendMessage(plugin.prefix + "마일리지가 부족합니다.");
-            return false;
-        }
+        return mileage - amount >= 0;
     }
 
     public static void sendCash(Player sender, Player receiver, double amount) {
+        if(sender.getUniqueId().equals(receiver.getUniqueId())){
+            sender.sendMessage(plugin.prefix + "자기 자신에게 송금할 수 없습니다.");
+            return;
+        }
         if (isEnoughCash(sender, amount)) {
             addCash(receiver, amount);
             takeCash(sender, amount);
@@ -89,6 +83,10 @@ public class CashFunction {
     }
 
     public static void sendMileage(Player sender, Player receiver, double amount) {
+        if(sender.getUniqueId().equals(receiver.getUniqueId())){
+            sender.sendMessage(plugin.prefix + "자기 자신에게 송금할 수 없습니다.");
+            return;
+        }
         if (isEnoughMileage(sender, amount)) {
             addMileage(receiver, amount);
             takeMileage(sender, amount);
