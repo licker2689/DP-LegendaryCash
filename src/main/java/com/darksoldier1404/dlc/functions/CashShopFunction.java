@@ -158,7 +158,10 @@ public class CashShopFunction {
             for (String key : shop.getConfigurationSection("Shop.Items").getKeys(false)) {
                 ItemStack item = shop.getItemStack("Shop.Items." + key);
                 ItemMeta im = item.getItemMeta();
-                List<String> lore = im.getLore() == null ? new ArrayList<>() : im.getLore();
+                List<String> lore = new ArrayList<>();
+                if(im.hasLore()) {
+                    lore = im.getLore();
+                }
                 if(shop.getString("Shop.Prices." + key + ".cash") == null || shop.getInt("Shop.Prices." + key + ".cash") == -1) {
                     item = NBT.setTag(item, "cash", -1);
                     lore.add("§b좌클릭 구매 : §c캐시 구매 불가.");
@@ -175,9 +178,11 @@ public class CashShopFunction {
                     item = NBT.setTag(item, "mileage", price);
                     lore.add("§b우클릭 구매 : §e" + price + " 마일리지");
                 }
-                im.setLore(lore);
-                item.setItemMeta(im);
-                inv.setItem(Integer.parseInt(key), item);
+                ItemStack r = item.clone();
+                ItemMeta rm = r.getItemMeta();
+                rm.setLore(lore);
+                r.setItemMeta(rm);
+                inv.setItem(Integer.parseInt(key), r);
             }
         }
         p.openInventory(inv);
