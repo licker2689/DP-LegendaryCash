@@ -37,5 +37,9 @@ public class LegendaryCash extends JavaPlugin {
 
     public void onDisable() {
         getLogger().info("LegendaryCash has been disabled!");
+        for (UUID uuid : udata.keySet()) {
+            ConfigUtils.saveData(uuid);
+        }
+        ShopConfigUtil.saveAllShop();
     }
 }
