@@ -29,6 +29,7 @@ public class CashCommand implements CommandExecutor, TabCompleter {
             p.sendMessage(prefix + "§a/캐시 확인 <닉네임> - 다른 유저의 캐시와 마일리지를 확인합니다. (상대가 보기를 허용중일 경우)");
             p.sendMessage(prefix + "§a/캐시 공개 - 자신의 캐시와 마일리지의 공개 여부를 설정합니다. (토글방식)");
             p.sendMessage(prefix + "§a/캐시 송금 C/M <닉네임> <금액> - 상대방에게 자신의 캐시 또는 마일리지를 송금합니다.");
+            p.sendMessage(prefix + "§a/캐시 수표 C/M <금액> (수량) - 캐시 또는 마일리지를 수표로 만듭니다.");
             if (p.isOp()) {
                 p.sendMessage(prefix + "§a/캐시 주기 C/M <닉네임> <금액> - 해당 플레이어에게 캐시 또는 마일리지를 줍니다.");
                 p.sendMessage(prefix + "§a/캐시 빼기 C/M <닉네임> <금액> - 해당 플레이어의 캐시 또는 마일리지를 가져옵니다.");
@@ -88,6 +89,56 @@ public class CashCommand implements CommandExecutor, TabCompleter {
             }
             if (args[1].equalsIgnoreCase("m")) {
                 CashFunction.sendMileage(p, Bukkit.getPlayer(args[2]), Double.parseDouble(args[3]));
+                return false;
+            }
+        }
+        if(args[0].equalsIgnoreCase("수표")) {
+            if (args.length == 1) {
+                p.sendMessage(prefix + "자금 종류를 입력해주세요! <C/M>");
+                return false;
+            }
+            if (args.length == 2) {
+                p.sendMessage(prefix + "금액을 입력해주세요!");
+                return false;
+            }
+            if (args.length == 3) {
+                if(args[1].equalsIgnoreCase("c")) {
+                    if(CashFunction.canUseCashCheck()) {
+                        CashFunction.getCashCheck(p, Double.parseDouble(args[2]), 1);
+                    }else{
+                        p.sendMessage(prefix + "수표 기능을 사용할 수 없습니다.");
+                    }
+                    return false;
+                }
+                if(args[1].equalsIgnoreCase("m")) {
+                    if(CashFunction.canUseMileageCheck()) {
+                        CashFunction.getMileageCheck(p, Double.parseDouble(args[2]), 1);
+                    }else{
+                        p.sendMessage(prefix + "수표 기능을 사용할 수 없습니다.");
+                    }
+                    return false;
+                }
+                p.sendMessage(prefix + "명령어가 옳바르지 않습니다.");
+                return false;
+            }
+            if (args.length == 4) {
+                if(args[1].equalsIgnoreCase("c")) {
+                    if(CashFunction.canUseCashCheck()) {
+                        CashFunction.getCashCheck(p, Double.parseDouble(args[2]), Integer.parseInt(args[3]));
+                    }else{
+                        p.sendMessage(prefix + "수표 기능을 사용할 수 없습니다.");
+                    }
+                    return false;
+                }
+                if(args[1].equalsIgnoreCase("m")) {
+                    if(CashFunction.canUseMileageCheck()) {
+                        CashFunction.getMileageCheck(p, Double.parseDouble(args[2]), Integer.parseInt(args[3]));
+                    }else{
+                        p.sendMessage(prefix + "수표 기능을 사용할 수 없습니다.");
+                    }
+                    return false;
+                }
+                p.sendMessage(prefix + "명령어가 옳바르지 않습니다.");
                 return false;
             }
         }
@@ -193,11 +244,11 @@ public class CashCommand implements CommandExecutor, TabCompleter {
     public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, @NotNull String[] args) {
         if (args.length == 1) {
             if (sender.isOp()) {
-                return Arrays.asList("주기", "빼기", "설정", "확인", "공개", "송금");
+                return Arrays.asList("주기", "빼기", "설정", "확인", "공개", "송금", "수표");
             }
-            return Arrays.asList("확인", "공개", "송금");
+            return Arrays.asList("확인", "공개", "송금", "수표");
         }
-        if (args[0].equals("송금") || args[0].equals("주기") || args[0].equals("빼기") || args[0].equals("설정")) {
+        if (args[0].equals("송금") || args[0].equals("주기") || args[0].equals("빼기") || args[0].equals("설정") || args[0].equals("수표")) {
             if (args.length == 2) {
                 return Arrays.asList("C", "M");
             }
