@@ -6,6 +6,22 @@ import org.bukkit.entity.Player;
 public class CashFunction {
     private static final LegendaryCash plugin = LegendaryCash.getInstance();
 
+    public static boolean canUseCashCheck() {
+        return plugin.config.getBoolean("Settings.useCashCheck");
+    }
+
+    public static boolean canUseMileageCheck() {
+        return plugin.config.getBoolean("Settings.useMileageCheck");
+    }
+
+    public static void getCashCheck(Player p, double cash, int amount) {
+
+    }
+
+    public static void getMileageCheck(Player p, double mileage, int amount) {
+
+    }
+
     public static double getCash(Player p) {
         return plugin.udata.get(p.getUniqueId()).getInt("Player.CASH");
     }
@@ -71,6 +87,10 @@ public class CashFunction {
     public static void sendCash(Player sender, Player receiver, double amount) {
         if(sender.getUniqueId().equals(receiver.getUniqueId())){
             sender.sendMessage(plugin.prefix + "자기 자신에게 송금할 수 없습니다.");
+            return;
+        }
+        if(amount <= 0){
+            sender.sendMessage(plugin.prefix + "송금할 금액이 0원 이하입니다.");
             return;
         }
         if (isEnoughCash(sender, amount)) {

@@ -1,2 +1,18 @@
 Settings:
   prefix: "&f[ &e캐시 &f] "
+
+  # [ ---------- 수표 기능 ---------- ]
+
+  # 캐시 수표화 기능 사용 여부
+  useCashCheck: false
+  # 마일리지 수표화 기능 사용 여부
+  useMileageCheck: false
+  # 수표화 가능한 최소 금액
+  minCashCheck: 100
+  minMileageCheck: 100
+  # 수표 아이템 타입  (변경전에 만들어진 수표는 변경후에도 사용 가능합니다.)
+  cashItemType: "PAPER"
+  mileageItemType: "PAPER"
+  # 아이템 CustomModelData (리소스팩에 사용되는 커스텀 모델 데이터 아이디 입니다.)
+  cashItemCustomModelData: 0
+  mileageItemCustomModelData: 0
