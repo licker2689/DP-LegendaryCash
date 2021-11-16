@@ -193,7 +193,7 @@ public class CashCommand implements CommandExecutor, TabCompleter {
     public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, @NotNull String[] args) {
         if (args.length == 1) {
             if (sender.isOp()) {
-                return Arrays.asList("주기", "빼기", "설정");
+                return Arrays.asList("주기", "빼기", "설정", "확인", "공개", "송금");
             }
             return Arrays.asList("확인", "공개", "송금");
         }
