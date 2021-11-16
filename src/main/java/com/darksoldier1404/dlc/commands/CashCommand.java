@@ -29,6 +29,11 @@ public class CashCommand implements CommandExecutor, TabCompleter {
             p.sendMessage(prefix + "§a/캐시 확인 <닉네임> - 다른 유저의 캐시와 마일리지를 확인합니다. (상대가 보기를 허용중일 경우)");
             p.sendMessage(prefix + "§a/캐시 공개 - 자신의 캐시와 마일리지의 공개 여부를 설정합니다. (토글방식)");
             p.sendMessage(prefix + "§a/캐시 송금 C/M <닉네임> <금액> - 상대방에게 자신의 캐시 또는 마일리지를 송금합니다.");
+            if (p.isOp()) {
+                p.sendMessage(prefix + "§a/캐시 주기 C/M <닉네임> <금액> - 해당 플레이어에게 캐시 또는 마일리지를 줍니다.");
+                p.sendMessage(prefix + "§a/캐시 빼기 C/M <닉네임> <금액> - 해당 플레이어의 캐시 또는 마일리지를 가져옵니다.");
+                p.sendMessage(prefix + "§a/캐시 설정 C/M <닉네임> <금액> - 해당 플레이어의 캐시 또는 마일리지를 설정합니다.");
+            }
             return false;
         }
         if (args[0].equalsIgnoreCase("확인")) {
@@ -69,44 +74,141 @@ public class CashCommand implements CommandExecutor, TabCompleter {
                 p.sendMessage(prefix + "송금할 자금 종류를 입력해주세요! <C/M>");
                 return false;
             }
-            if(args.length == 2) {
+            if (args.length == 2) {
                 p.sendMessage(prefix + "송금할 대상의 닉네임을 입력해주세요!");
                 return false;
             }
-            if(args.length == 3) {
+            if (args.length == 3) {
                 p.sendMessage(prefix + "송금할 금액을 입력해주세요!");
                 return false;
             }
-            if(args[1].equalsIgnoreCase("c")) {
+            if (args[1].equalsIgnoreCase("c")) {
                 CashFunction.sendCash(p, Bukkit.getPlayer(args[2]), Double.parseDouble(args[3]));
                 return false;
             }
-            if(args[1].equalsIgnoreCase("m")) {
+            if (args[1].equalsIgnoreCase("m")) {
                 CashFunction.sendMileage(p, Bukkit.getPlayer(args[2]), Double.parseDouble(args[3]));
                 return false;
             }
         }
-
+        if (p.isOp()) {
+            if (args[0].equals("주기")) {
+                if (args.length == 1) {
+                    p.sendMessage(prefix + "지급할 자금 종류를 입력해주세요! <C/M>");
+                    return false;
+                }
+                if (args.length == 2) {
+                    p.sendMessage(prefix + "지급할 대상의 닉네임을 입력해주세요!");
+                    return false;
+                }
+                if (args.length == 3) {
+                    p.sendMessage(prefix + "지급할 금액을 입력해주세요!");
+                    return false;
+                }
+                try {
+                    Bukkit.getPlayer(args[2]);
+                    Double.parseDouble(args[3]);
+                } catch (Exception e) {
+                    p.sendMessage(prefix + "명령어를 다시 확인해주시기 바랍니다.");
+                    return false;
+                }
+                if (args[1].equalsIgnoreCase("c")) {
+                    p.sendMessage(prefix + args[2] + "에게 " + args[3] + "만큼의 캐시를 지급합니다.");
+                    CashFunction.addCash(Bukkit.getPlayer(args[2]), Double.parseDouble(args[3]));
+                    return false;
+                }
+                if (args[1].equalsIgnoreCase("m")) {
+                    p.sendMessage(prefix + args[2] + "에게 " + args[3] + "만큼의 마일리지를 지급합니다.");
+                    CashFunction.addMileage(Bukkit.getPlayer(args[2]), Double.parseDouble(args[3]));
+                    return false;
+                }
+            }
+            if (args[0].equals("빼기")) {
+                if (args.length == 1) {
+                    p.sendMessage(prefix + "회수할 자금 종류를 입력해주세요! <C/M>");
+                    return false;
+                }
+                if (args.length == 2) {
+                    p.sendMessage(prefix + "회수할 대상의 닉네임을 입력해주세요!");
+                    return false;
+                }
+                if (args.length == 3) {
+                    p.sendMessage(prefix + "회수할 금액을 입력해주세요!");
+                    return false;
+                }
+                try {
+                    Bukkit.getPlayer(args[2]);
+                    Double.parseDouble(args[3]);
+                } catch (Exception e) {
+                    p.sendMessage(prefix + "명령어를 다시 확인해주시기 바랍니다.");
+                    return false;
+                }
+                if (args[1].equalsIgnoreCase("c")) {
+                    p.sendMessage(prefix + args[2] + "의 " + args[3] + "만큼의 캐시를 회수합니다.");
+                    CashFunction.takeCash(Bukkit.getPlayer(args[2]), Double.parseDouble(args[3]));
+                    return false;
+                }
+                if (args[1].equalsIgnoreCase("m")) {
+                    p.sendMessage(prefix + args[2] + "의 " + args[3] + "만큼의 마일리지를 회수합니다.");
+                    CashFunction.takeMileage(Bukkit.getPlayer(args[2]), Double.parseDouble(args[3]));
+                    return false;
+                }
+            }
+            if (args[0].equals("설정")) {
+                if (args.length == 1) {
+                    p.sendMessage(prefix + "설정할 자금 종류를 입력해주세요! <C/M>");
+                    return false;
+                }
+                if (args.length == 2) {
+                    p.sendMessage(prefix + "설정할 대상의 닉네임을 입력해주세요!");
+                    return false;
+                }
+                if (args.length == 3) {
+                    p.sendMessage(prefix + "설정할 금액을 입력해주세요!");
+                    return false;
+                }
+                try {
+                    Bukkit.getPlayer(args[2]);
+                    Double.parseDouble(args[3]);
+                } catch (Exception e) {
+                    p.sendMessage(prefix + "명령어를 다시 확인해주시기 바랍니다.");
+                    return false;
+                }
+                if (args[1].equalsIgnoreCase("c")) {
+                    p.sendMessage(prefix + args[2] + "의 " + args[3] + "만큼의 캐시를 설정합니다.");
+                    CashFunction.setCash(Bukkit.getPlayer(args[2]), Double.parseDouble(args[3]));
+                    return false;
+                }
+                if (args[1].equalsIgnoreCase("m")) {
+                    p.sendMessage(prefix + args[2] + "의 " + args[3] + "만큼의 마일리지를 설정합니다.");
+                    CashFunction.setMileage(Bukkit.getPlayer(args[2]), Double.parseDouble(args[3]));
+                    return false;
+                }
+            }
+        }
         return false;
     }
 
     @Override
     public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, @NotNull String[] args) {
-        if(args.length == 1) {
+        if (args.length == 1) {
+            if (sender.isOp()) {
+                return Arrays.asList("주기", "빼기", "설정");
+            }
             return Arrays.asList("확인", "공개", "송금");
         }
-        if(args[0].equals("송금")) {
-            if(args.length == 2) {
+        if (args[0].equals("송금") || args[0].equals("주기") || args[0].equals("빼기") || args[0].equals("설정")) {
+            if (args.length == 2) {
                 return Arrays.asList("C", "M");
             }
-            if(args.length == 3) {
+            if (args.length == 3) {
                 List<String> names = new ArrayList<>();
                 Bukkit.getOnlinePlayers().forEach(o -> names.add(o.getName()));
                 return names;
             }
         }
-        if(args[0].equals("확인")) {
-            if(args.length == 2) {
+        if (args[0].equals("확인")) {
+            if (args.length == 2) {
                 List<String> names = new ArrayList<>();
                 Bukkit.getOnlinePlayers().forEach(o -> names.add(o.getName()));
                 return names;
