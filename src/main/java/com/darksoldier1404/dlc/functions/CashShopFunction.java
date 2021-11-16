@@ -3,13 +3,17 @@ package com.darksoldier1404.dlc.functions;
 import com.darksoldier1404.dlc.LegendaryCash;
 import com.darksoldier1404.dlc.utils.ConfigUtils;
 import com.darksoldier1404.dlc.utils.NBT;
-import com.darksoldier1404.dlc.utils.ShopConfigUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
+import java.util.ArrayList;
+import java.util.List;
+
+@SuppressWarnings("all")
 public class CashShopFunction {
     private static final LegendaryCash plugin = LegendaryCash.getInstance();
 
@@ -104,6 +108,12 @@ public class CashShopFunction {
         ItemStack r = item.clone();
         r = NBT.removeTag(r, "cash");
         r = NBT.removeTag(r, "mileage");
+        ItemMeta im = r.getItemMeta();
+        List<String> lore =  im.getLore();
+        lore.remove(lore.size()-1);
+        lore.remove(lore.size()-1);
+        im.setLore(lore);
+        r.setItemMeta(im);
         p.getInventory().addItem(r);
         p.sendMessage(plugin.prefix + "§a구매에 성공하였습니다.");
     }
@@ -127,6 +137,12 @@ public class CashShopFunction {
         ItemStack r = item.clone();
         r = NBT.removeTag(r, "cash");
         r = NBT.removeTag(r, "mileage");
+        ItemMeta im = r.getItemMeta();
+        List<String> lore =  im.getLore();
+        lore.remove(lore.size()-1);
+        lore.remove(lore.size()-1);
+        im.setLore(lore);
+        r.setItemMeta(im);
         p.getInventory().addItem(r);
         p.sendMessage(plugin.prefix + "§a구매에 성공하였습니다.");
     }
@@ -141,16 +157,26 @@ public class CashShopFunction {
         if(shop.getConfigurationSection("Shop.Items") != null) {
             for (String key : shop.getConfigurationSection("Shop.Items").getKeys(false)) {
                 ItemStack item = shop.getItemStack("Shop.Items." + key);
+                ItemMeta im = item.getItemMeta();
+                List<String> lore = im.getLore() == null ? new ArrayList<>() : im.getLore();
                 if(shop.getString("Shop.Prices." + key + ".cash") == null || shop.getInt("Shop.Prices." + key + ".cash") == -1) {
                     item = NBT.setTag(item, "cash", -1);
+                    lore.add("§b좌클릭 구매 : §c캐시 구매 불가.");
                 }else{
-                    item = NBT.setTag(item, "cash", shop.getString("Shop.Prices." + key + ".cash"));
+                    String price = shop.getString("Shop.Prices." + key + ".cash");
+                    item = NBT.setTag(item, "cash", price);
+                    lore.add("§b좌클릭 구매 : §e" + price + " 캐시");
                 }
                 if(shop.getString("Shop.Prices." + key + ".mileage") == null || shop.getInt("Shop.Prices." + key + ".mileage") == -1) {
                     item = NBT.setTag(item, "mileage", -1);
+                    lore.add("§b우클릭 구매 : §c마일리지 구매 불가.");
                 }else{
-                    item = NBT.setTag(item, "mileage", shop.getString("Shop.Prices." + key + ".mileage"));
+                    String price = shop.getString("Shop.Prices." + key + ".mileage");
+                    item = NBT.setTag(item, "mileage", price);
+                    lore.add("§b우클릭 구매 : §e" + price + " 마일리지");
                 }
+                im.setLore(lore);
+                item.setItemMeta(im);
                 inv.setItem(Integer.parseInt(key), item);
             }
         }
