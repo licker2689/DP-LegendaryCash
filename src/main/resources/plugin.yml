@@ -1,9 +1,10 @@
 name: DS-LegendaryCash
-version: 1.0.0.29
+version: 1.0.0.30
 main: com.darksoldier1404.dlc.LegendaryCash
 api-version: 1.17
 authors: [ DEAD_POOLIO_ ]
 depend:
+  - DP-UniversalCore
   - Essentials
 commands:
   캐시:
