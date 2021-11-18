@@ -16,7 +16,7 @@ import java.util.Map;
 import java.util.UUID;
 
 public class LegendaryCash extends JavaPlugin {
-    private Plugin core;
+    private UniversalCore core;
     private static LegendaryCash plugin;
     public String prefix;
     public YamlConfiguration config;
@@ -31,12 +31,13 @@ public class LegendaryCash extends JavaPlugin {
 
     public void onEnable() {
         plugin = this;
-        core = getServer().getPluginManager().getPlugin("UniversalCore");
-        if(core == null) {
+        Plugin pl = getServer().getPluginManager().getPlugin("UniversalCore");
+        if(pl == null) {
             getLogger().warning("DP-UniversalCore 플러그인이 설치되어있지 않습니다.");
             plugin.setEnabled(false);
             return;
         }
+        core = (UniversalCore) pl;
         getLogger().info("LegendaryCash has been enabled!");
         ConfigUtils.loadDefaultConfig();
         ShopConfigUtil.loadAllShop();
