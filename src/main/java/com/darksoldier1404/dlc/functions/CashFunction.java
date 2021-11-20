@@ -64,36 +64,6 @@ public class CashFunction {
         return plugin.config.getStringList("Settings.mileageCheckItem.Lores");
     }
 
-    public static void getCashCheck(Player p, double cash, int amount) {
-        if(isEnoughCash(p, cash*amount)){
-            if(getMinCashCheck() > cash){
-                p.sendMessage(plugin.prefix + "수표로 뽑을 수 있는 최소 금액은 " + getMinCashCheck() + "캐시 입니다.");
-                return;
-            }
-            if(getCashCheckMaterial() == null){
-                p.sendMessage(plugin.prefix + "수표로 뽑을 수 있는 아이템이 설정되지 않았습니다.");
-                return;
-            }
-            if (p.getInventory().firstEmpty() == -1) {
-                p.sendMessage(plugin.prefix + "§c인벤토리 공간이 부족합니다.");
-                return;
-            }
-            ItemStack item = new ItemStack(getCashCheckMaterial());
-            item.setAmount(amount);
-            ItemMeta im = item.getItemMeta();
-            im.setDisplayName(getCashCheckDisplayName());
-            im.setCustomModelData(getCashCheckCMI());
-            im.setLore(getCashCheckLore());
-            item.setItemMeta(im);
-            item = NBT.setTag(item, "CASH", cash);
-            p.getInventory().addItem(item);
-            p.sendMessage(plugin.prefix + "수표로 " + amount + "개의 수표를 뽑았습니다.");
-            takeCash(p, cash*amount);
-        }else{
-            p.sendMessage(plugin.prefix + "§c캐시가 부족합니다.");
-        }
-    }
-
     public static void getMileageCheck(Player p, double mileage, int amount) {
         if(isEnoughMileage(p, mileage*amount)) {
             if (getMinMileageCheck() > mileage) {
@@ -111,9 +81,13 @@ public class CashFunction {
             ItemStack item = new ItemStack(getMileageCheckMaterial());
             item.setAmount(amount);
             ItemMeta im = item.getItemMeta();
-            im.setDisplayName(getMileageCheckDisplayName());
+            im.setDisplayName(getMileageCheckDisplayName().replace("<mileage>", String.valueOf(mileage)));
             im.setCustomModelData(getMileageCheckCMI());
-            im.setLore(getMileageCheckLore());
+            List<String> lore = getMileageCheckLore();
+            for(int i = 0; i < lore.size(); i++){
+                lore.set(i, lore.get(i).replace("<mileage>", String.valueOf(mileage)));
+            }
+            im.setLore(lore);
             item.setItemMeta(im);
             item = NBT.setTag(item, "MILEAGE", mileage);
             p.getInventory().addItem(item);
@@ -121,6 +95,40 @@ public class CashFunction {
             takeMileage(p, mileage);
         }else{
             p.sendMessage(plugin.prefix + "§c마일리지가 부족합니다.");
+        }
+    }
+
+    public static void getCashCheck(Player p, double cash, int amount) {
+        if(isEnoughCash(p, cash*amount)){
+            if(getMinCashCheck() > cash){
+                p.sendMessage(plugin.prefix + "수표로 뽑을 수 있는 최소 금액은 " + getMinCashCheck() + "캐시 입니다.");
+                return;
+            }
+            if(getCashCheckMaterial() == null){
+                p.sendMessage(plugin.prefix + "수표로 뽑을 수 있는 아이템이 설정되지 않았습니다.");
+                return;
+            }
+            if (p.getInventory().firstEmpty() == -1) {
+                p.sendMessage(plugin.prefix + "§c인벤토리 공간이 부족합니다.");
+                return;
+            }
+            ItemStack item = new ItemStack(getCashCheckMaterial());
+            item.setAmount(amount);
+            ItemMeta im = item.getItemMeta();
+            im.setDisplayName(getCashCheckDisplayName().replace("<cash>", String.valueOf(cash)));
+            im.setCustomModelData(getCashCheckCMI());
+            List<String> lore = getCashCheckLore();
+            for(int i = 0; i < lore.size(); i++){
+                lore.set(i, lore.get(i).replace("<cash>", String.valueOf(cash)));
+            }
+            im.setLore(lore);
+            item.setItemMeta(im);
+            item = NBT.setTag(item, "CASH", cash);
+            p.getInventory().addItem(item);
+            p.sendMessage(plugin.prefix + "수표로 " + amount + "개의 수표를 뽑았습니다.");
+            takeCash(p, cash*amount);
+        }else{
+            p.sendMessage(plugin.prefix + "§c캐시가 부족합니다.");
         }
     }
 

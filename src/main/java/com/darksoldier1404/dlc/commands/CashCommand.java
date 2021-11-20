@@ -2,6 +2,7 @@ package com.darksoldier1404.dlc.commands;
 
 import com.darksoldier1404.dlc.LegendaryCash;
 import com.darksoldier1404.dlc.functions.CashFunction;
+import com.darksoldier1404.dlc.utils.ConfigUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -236,6 +237,11 @@ public class CashCommand implements CommandExecutor, TabCompleter {
                     return false;
                 }
             }
+            if (args[0].equals("리로드")) {
+                ConfigUtils.reloadConfig();
+                p.sendMessage(prefix + "콘피그 파일을 리로드하였습니다.");
+                return false;
+            }
         }
         return false;
     }
@@ -244,7 +250,7 @@ public class CashCommand implements CommandExecutor, TabCompleter {
     public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, @NotNull String[] args) {
         if (args.length == 1) {
             if (sender.isOp()) {
-                return Arrays.asList("주기", "빼기", "설정", "확인", "공개", "송금", "수표");
+                return Arrays.asList("주기", "빼기", "설정", "확인", "공개", "송금", "수표", "리로드");
             }
             return Arrays.asList("확인", "공개", "송금", "수표");
         }
