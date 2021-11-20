@@ -9,7 +9,7 @@ tasks.withType(JavaCompile) {
 }
 
 group 'github.com/darksoldier1404'
-version = '1.0.0.30'
+version = '1.0.0.35'
 
 jar {
     destinationDirectory.set(file("C:\\Minecraft Servers\\1.17.1 Play Ground\\plugins\\"))
@@ -65,6 +65,9 @@ repositories {
     maven { url "https://repo.dmulloy2.net/repository/public/" }
     maven {
         url "https://org.bstats/bstats-bukkit"
+    }
+    maven {
+        url 'https://repo.spring.io/plugins-release/'
     }
 }
 
