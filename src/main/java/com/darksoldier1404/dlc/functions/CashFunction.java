@@ -2,6 +2,7 @@ package com.darksoldier1404.dlc.functions;
 
 import com.darksoldier1404.dlc.LegendaryCash;
 import com.darksoldier1404.dlc.utils.NBT;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -64,40 +65,6 @@ public class CashFunction {
         return plugin.config.getStringList("Settings.mileageCheckItem.Lores");
     }
 
-    public static void getMileageCheck(Player p, double mileage, int amount) {
-        if(isEnoughMileage(p, mileage*amount)) {
-            if (getMinMileageCheck() > mileage) {
-                p.sendMessage(plugin.prefix + "마일리지로 뽑을 수 있는 최소 마일리지는 " + getMinMileageCheck() + "마일리지 입니다.");
-                return;
-            }
-            if (getMileageCheckMaterial() == null) {
-                p.sendMessage(plugin.prefix + "마일리지로 뽑을 수 있는 아이템이 설정되지 않았습니다.");
-                return;
-            }
-            if (p.getInventory().firstEmpty() == -1) {
-                p.sendMessage(plugin.prefix + "§c인벤토리 공간이 부족합니다.");
-                return;
-            }
-            ItemStack item = new ItemStack(getMileageCheckMaterial());
-            item.setAmount(amount);
-            ItemMeta im = item.getItemMeta();
-            im.setDisplayName(getMileageCheckDisplayName().replace("<mileage>", String.valueOf(mileage)));
-            im.setCustomModelData(getMileageCheckCMI());
-            List<String> lore = getMileageCheckLore();
-            for(int i = 0; i < lore.size(); i++){
-                lore.set(i, lore.get(i).replace("<mileage>", String.valueOf(mileage)));
-            }
-            im.setLore(lore);
-            item.setItemMeta(im);
-            item = NBT.setTag(item, "MILEAGE", mileage);
-            p.getInventory().addItem(item);
-            p.sendMessage(plugin.prefix + "마일리지로 " + amount + "개의 수표를 뽑았습니다.");
-            takeMileage(p, mileage);
-        }else{
-            p.sendMessage(plugin.prefix + "§c마일리지가 부족합니다.");
-        }
-    }
-
     public static void getCashCheck(Player p, double cash, int amount) {
         if(isEnoughCash(p, cash*amount)){
             if(getMinCashCheck() > cash){
@@ -115,11 +82,11 @@ public class CashFunction {
             ItemStack item = new ItemStack(getCashCheckMaterial());
             item.setAmount(amount);
             ItemMeta im = item.getItemMeta();
-            im.setDisplayName(getCashCheckDisplayName().replace("<cash>", String.valueOf(cash)));
+            im.setDisplayName(ChatColor.translateAlternateColorCodes('&', getCashCheckDisplayName().replace("<cash>", String.valueOf(cash))));
             im.setCustomModelData(getCashCheckCMI());
             List<String> lore = getCashCheckLore();
             for(int i = 0; i < lore.size(); i++){
-                lore.set(i, lore.get(i).replace("<cash>", String.valueOf(cash)));
+                lore.set(i, ChatColor.translateAlternateColorCodes('&', lore.get(i).replace("<cash>", String.valueOf(cash))));
             }
             im.setLore(lore);
             item.setItemMeta(im);
@@ -129,6 +96,40 @@ public class CashFunction {
             takeCash(p, cash*amount);
         }else{
             p.sendMessage(plugin.prefix + "§c캐시가 부족합니다.");
+        }
+    }
+
+    public static void getMileageCheck(Player p, double mileage, int amount) {
+        if(isEnoughMileage(p, mileage*amount)) {
+            if (getMinMileageCheck() > mileage) {
+                p.sendMessage(plugin.prefix + "마일리지로 뽑을 수 있는 최소 마일리지는 " + getMinMileageCheck() + "마일리지 입니다.");
+                return;
+            }
+            if (getMileageCheckMaterial() == null) {
+                p.sendMessage(plugin.prefix + "마일리지로 뽑을 수 있는 아이템이 설정되지 않았습니다.");
+                return;
+            }
+            if (p.getInventory().firstEmpty() == -1) {
+                p.sendMessage(plugin.prefix + "§c인벤토리 공간이 부족합니다.");
+                return;
+            }
+            ItemStack item = new ItemStack(getMileageCheckMaterial());
+            item.setAmount(amount);
+            ItemMeta im = item.getItemMeta();
+            im.setDisplayName(ChatColor.translateAlternateColorCodes('&', getMileageCheckDisplayName().replace("<mileage>", String.valueOf(mileage))));
+            im.setCustomModelData(getMileageCheckCMI());
+            List<String> lore = getMileageCheckLore();
+            for(int i = 0; i < lore.size(); i++){
+                lore.set(i, ChatColor.translateAlternateColorCodes('&', lore.get(i).replace("<mileage>", String.valueOf(mileage))));
+            }
+            im.setLore(lore);
+            item.setItemMeta(im);
+            item = NBT.setTag(item, "MILEAGE", mileage);
+            p.getInventory().addItem(item);
+            p.sendMessage(plugin.prefix + "마일리지로 " + amount + "개의 수표를 뽑았습니다.");
+            takeMileage(p, mileage);
+        }else{
+            p.sendMessage(plugin.prefix + "§c마일리지가 부족합니다.");
         }
     }
 

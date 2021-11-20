@@ -9,7 +9,7 @@ tasks.withType(JavaCompile) {
 }
 
 group 'github.com/darksoldier1404'
-version = '1.0.0.36'
+version = '1.0.0.37'
 
 jar {
     destinationDirectory.set(file("C:\\Minecraft Servers\\1.17.1 Play Ground\\plugins\\"))
