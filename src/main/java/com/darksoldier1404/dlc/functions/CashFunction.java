@@ -1,8 +1,16 @@
 package com.darksoldier1404.dlc.functions;
 
 import com.darksoldier1404.dlc.LegendaryCash;
+import com.darksoldier1404.dlc.utils.NBT;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
+
+@SuppressWarnings("all")
 public class CashFunction {
     private static final LegendaryCash plugin = LegendaryCash.getInstance();
 
@@ -14,12 +22,106 @@ public class CashFunction {
         return plugin.config.getBoolean("Settings.useMileageCheck");
     }
 
-    public static void getCashCheck(Player p, double cash, int amount) {
+    public static float getMinCashCheck() {
+        return (float) plugin.config.getDouble("Settings.minCashCheck");
+    }
 
+    public static float getMinMileageCheck() {
+        return (float) plugin.config.getDouble("Settings.minMileageCheck");
+    }
+
+    @Nullable
+    public static Material getCashCheckMaterial() {
+        return Material.getMaterial(plugin.config.getString("Settings.cashCheckItem.ItemType"));
+    }
+
+    @Nullable
+    public static Material getMileageCheckMaterial() {
+        return Material.getMaterial(plugin.config.getString("Settings.mileageCheckItem.ItemType"));
+    }
+
+    public static int getCashCheckCMI() {
+        return plugin.config.getInt("Settings.cashCheckItem.CustomModelData");
+    }
+
+    public static int getMileageCheckCMI() {
+        return plugin.config.getInt("Settings.mileageCheckItem.CustomModelData");
+    }
+
+    public static String getCashCheckDisplayName() {
+        return plugin.config.getString("Settings.cashCheckItem.DisplayName");
+    }
+
+    public static String getMileageCheckDisplayName() {
+        return plugin.config.getString("Settings.mileageCheckItem.DisplayName");
+    }
+
+    public static List<String> getCashCheckLore() {
+        return plugin.config.getStringList("Settings.cashCheckItem.Lores");
+    }
+
+    public static List<String> getMileageCheckLore() {
+        return plugin.config.getStringList("Settings.mileageCheckItem.Lores");
+    }
+
+    public static void getCashCheck(Player p, double cash, int amount) {
+        if(isEnoughCash(p, cash*amount)){
+            if(getMinCashCheck() > cash){
+                p.sendMessage(plugin.prefix + "수표로 뽑을 수 있는 최소 금액은 " + getMinCashCheck() + "캐시 입니다.");
+                return;
+            }
+            if(getCashCheckMaterial() == null){
+                p.sendMessage(plugin.prefix + "수표로 뽑을 수 있는 아이템이 설정되지 않았습니다.");
+                return;
+            }
+            if (p.getInventory().firstEmpty() == -1) {
+                p.sendMessage(plugin.prefix + "§c인벤토리 공간이 부족합니다.");
+                return;
+            }
+            ItemStack item = new ItemStack(getCashCheckMaterial());
+            item.setAmount(amount);
+            ItemMeta im = item.getItemMeta();
+            im.setDisplayName(getCashCheckDisplayName());
+            im.setCustomModelData(getCashCheckCMI());
+            im.setLore(getCashCheckLore());
+            item.setItemMeta(im);
+            item = NBT.setTag(item, "CASH", cash);
+            p.getInventory().addItem(item);
+            p.sendMessage(plugin.prefix + "수표로 " + amount + "개의 수표를 뽑았습니다.");
+            takeCash(p, cash*amount);
+        }else{
+            p.sendMessage(plugin.prefix + "§c캐시가 부족합니다.");
+        }
     }
 
     public static void getMileageCheck(Player p, double mileage, int amount) {
-
+        if(isEnoughMileage(p, mileage*amount)) {
+            if (getMinMileageCheck() > mileage) {
+                p.sendMessage(plugin.prefix + "마일리지로 뽑을 수 있는 최소 마일리지는 " + getMinMileageCheck() + "마일리지 입니다.");
+                return;
+            }
+            if (getMileageCheckMaterial() == null) {
+                p.sendMessage(plugin.prefix + "마일리지로 뽑을 수 있는 아이템이 설정되지 않았습니다.");
+                return;
+            }
+            if (p.getInventory().firstEmpty() == -1) {
+                p.sendMessage(plugin.prefix + "§c인벤토리 공간이 부족합니다.");
+                return;
+            }
+            ItemStack item = new ItemStack(getMileageCheckMaterial());
+            item.setAmount(amount);
+            ItemMeta im = item.getItemMeta();
+            im.setDisplayName(getMileageCheckDisplayName());
+            im.setCustomModelData(getMileageCheckCMI());
+            im.setLore(getMileageCheckLore());
+            item.setItemMeta(im);
+            item = NBT.setTag(item, "MILEAGE", mileage);
+            p.getInventory().addItem(item);
+            p.sendMessage(plugin.prefix + "마일리지로 " + amount + "개의 수표를 뽑았습니다.");
+            takeMileage(p, mileage);
+        }else{
+            p.sendMessage(plugin.prefix + "§c마일리지가 부족합니다.");
+        }
     }
 
     public static double getCash(Player p) {
