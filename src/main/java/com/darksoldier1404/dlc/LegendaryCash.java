@@ -6,9 +6,7 @@ import com.darksoldier1404.dlc.events.DLCEvent;
 import com.darksoldier1404.dlc.utils.ConfigUtils;
 import com.darksoldier1404.dlc.utils.ShopConfigUtil;
 import com.darksoldier1404.dlc.utils.UpdateChecker;
-import com.darksoldier1404.duc.UniversalCore;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.HashMap;
@@ -16,7 +14,6 @@ import java.util.Map;
 import java.util.UUID;
 
 public class LegendaryCash extends JavaPlugin {
-    private UniversalCore core;
     private static LegendaryCash plugin;
     public String prefix;
     public YamlConfiguration config;
@@ -31,13 +28,12 @@ public class LegendaryCash extends JavaPlugin {
 
     public void onEnable() {
         plugin = this;
-        Plugin pl = getServer().getPluginManager().getPlugin("UniversalCore");
-        if(pl == null) {
-            getLogger().warning("DP-UniversalCore 플러그인이 설치되어있지 않습니다.");
-            plugin.setEnabled(false);
-            return;
-        }
-        core = (UniversalCore) pl;
+//        Plugin pl = getServer().getPluginManager().getPlugin("UniversalCore");
+//        if(pl == null) {
+//            getLogger().warning("DP-UniversalCore 플러그인이 설치되어있지 않습니다.");
+//            plugin.setEnabled(false);
+//            return;
+//        }
         getLogger().info("LegendaryCash has been enabled!");
         ConfigUtils.loadDefaultConfig();
         ShopConfigUtil.loadAllShop();
