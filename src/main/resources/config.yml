@@ -10,9 +10,23 @@ Settings:
   # 수표화 가능한 최소 금액
   minCashCheck: 100
   minMileageCheck: 100
-  # 수표 아이템 타입  (변경전에 만들어진 수표는 변경후에도 사용 가능합니다.)
-  cashItemType: "PAPER"
-  mileageItemType: "PAPER"
-  # 아이템 CustomModelData (리소스팩에 사용되는 커스텀 모델 데이터 아이디 입니다.)
-  cashItemCustomModelData: 0
-  mileageItemCustomModelData: 0
+
+  # 수표 아이템 커스터마이징
+  # 플레이스 홀더 : <cash> <mileage>
+  cashCheckItem:
+    # 수표 아이템 타입  (변경전에 만들어진 수표는 변경후에도 사용 가능합니다.) 참고 : https://papermc.io/javadocs/paper/1.17/org/bukkit/Material.html
+    ItemType: "PAPER"
+    # 수표 아이템 CustomModelData (리소스팩에 사용되는 커스텀 모델 데이터 아이디 입니다.)
+    CustomModelData: 0
+    DisplayName: "&f[ &6수표 &f] &e<cash> 캐시"
+    Lores:
+      - "&f"
+      - "&e우클릭 하여 <cash> 캐시를 획득합니다."
+
+  mileageCheckItem:
+    ItemType: "PAPER"
+    CustomModelData: 0
+    DisplayName: "&f[ &6수표 &f] &e<mileage> 마일리지"
+    Lores:
+      - "&f"
+      - "&e우클릭 하여 <mileage> 마일리지를 획득합니다."
