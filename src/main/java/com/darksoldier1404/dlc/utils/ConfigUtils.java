@@ -4,6 +4,7 @@ import com.darksoldier1404.dlc.LegendaryCash;
 import com.google.common.collect.Lists;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.IOException;
@@ -65,6 +66,7 @@ public class ConfigUtils {
         return YamlConfiguration.loadConfiguration(file);
     }
 
+    @Nullable
     public static List<YamlConfiguration> getData(String path) {
         File file = new File(plugin.getDataFolder() + "/" + path);
         if (!file.exists()) {

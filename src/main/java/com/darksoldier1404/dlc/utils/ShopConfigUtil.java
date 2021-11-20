@@ -29,9 +29,11 @@ public class ShopConfigUtil {
 
     public static void loadAllShop() {
         plugin.shops.clear();
-        ConfigUtils.getData("shops").forEach((shop) -> {
-            plugin.shops.put(shop.getString("Shop.Name"), shop);
-        });
+        if(ConfigUtils.getData("shops") != null) {
+            ConfigUtils.getData("shops").forEach((shop) -> {
+                plugin.shops.put(shop.getString("Shop.Name"), shop);
+            });
+        }
     }
 
     public static void saveAllShop() {
