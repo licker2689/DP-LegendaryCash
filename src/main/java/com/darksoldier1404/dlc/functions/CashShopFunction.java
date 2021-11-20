@@ -2,7 +2,7 @@ package com.darksoldier1404.dlc.functions;
 
 import com.darksoldier1404.dlc.LegendaryCash;
 import com.darksoldier1404.dlc.utils.ConfigUtils;
-import com.darksoldier1404.dlc.utils.NBT;
+import com.darksoldier1404.duc.utils.NBT;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;

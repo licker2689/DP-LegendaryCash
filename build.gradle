@@ -16,7 +16,7 @@ jar {
 }
 
 task deleteMyFile(type: Delete) {
-    delete "C:\\Minecraft Servers\\1.17.1 Play Ground\\plugins\\DS-LegendaryCash-" + version + ".jar"
+    delete "C:\\Minecraft Servers\\1.17.1 Play Ground\\plugins\\DP-LegendaryCash-" + version + ".jar"
 }
 
 task DS_BUILD {

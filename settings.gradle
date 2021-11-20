@@ -1,2 +1,3 @@
-rootProject.name = 'DS-LegendaryCash'
-
+rootProject.name = 'DP-LegendaryCash'
+include('DP-UniversalCore')
+project(':DP-UniversalCore').projectDir = new File(settingsDir, '../DP-UniversalCore')
