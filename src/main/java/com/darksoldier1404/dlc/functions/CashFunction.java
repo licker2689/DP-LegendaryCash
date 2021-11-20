@@ -142,18 +142,30 @@ public class CashFunction {
     }
 
     public static void addCash(Player p, double amount) {
+        if(amount < 0){
+            p.sendMessage(plugin.prefix + "§c음수는 입력이 불가능합니다.");
+            return;
+        }
         double cash = getCash(p);
         cash += amount;
         plugin.udata.get(p.getUniqueId()).set("Player.CASH", cash);
     }
 
     public static void addMileage(Player p, double amount) {
+        if(amount < 0){
+            p.sendMessage(plugin.prefix + "§c음수는 입력이 불가능합니다.");
+            return;
+        }
         double mileage = getMileage(p);
         mileage += amount;
         plugin.udata.get(p.getUniqueId()).set("Player.MILEAGE", mileage);
     }
 
     public static boolean takeCash(Player p, double amount) {
+        if(amount < 0){
+            p.sendMessage(plugin.prefix + "§c음수는 입력이 불가능합니다.");
+            return false;
+        }
         double cash = getCash(p);
         if (cash - amount >= 0) {
             cash -= amount;
@@ -166,6 +178,10 @@ public class CashFunction {
     }
 
     public static boolean takeMileage(Player p, double amount) {
+        if(amount < 0){
+            p.sendMessage(plugin.prefix + "§c음수는 입력이 불가능합니다.");
+            return false;
+        }
         double mileage = getMileage(p);
         if (mileage - amount >= 0) {
             mileage -= amount;
@@ -178,10 +194,18 @@ public class CashFunction {
     }
 
     public static void setCash(Player p, double amount) {
+        if(amount < 0){
+            p.sendMessage(plugin.prefix + "§c음수는 입력이 불가능합니다.");
+            return;
+        }
         plugin.udata.get(p.getUniqueId()).set("Player.CASH", amount);
     }
 
     public static void setMileage(Player p, double amount) {
+        if(amount < 0){
+            p.sendMessage(plugin.prefix + "§c음수는 입력이 불가능합니다.");
+            return;
+        }
         plugin.udata.get(p.getUniqueId()).set("Player.MILEAGE", amount);
     }
 
