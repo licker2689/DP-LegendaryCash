@@ -5,8 +5,8 @@ import com.darksoldier1404.dlc.commands.CashShopCommand;
 import com.darksoldier1404.dlc.events.DLCEvent;
 import com.darksoldier1404.dlc.utils.ConfigUtils;
 import com.darksoldier1404.dlc.utils.ShopConfigUtil;
-import com.darksoldier1404.dlc.utils.UpdateChecker;
 import com.darksoldier1404.duc.UniversalCore;
+import com.darksoldier1404.duc.utils.UpdateChecker;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -31,24 +31,25 @@ public class LegendaryCash extends JavaPlugin {
 
     public void onEnable() {
         plugin = this;
-        Plugin pl = getServer().getPluginManager().getPlugin("UniversalCore");
+        Plugin pl = getServer().getPluginManager().getPlugin("DP-UniversalCore");
         if(pl == null) {
             getLogger().warning("DP-UniversalCore 플러그인이 설치되어있지 않습니다.");
+            getLogger().warning("DP-LegendaryCash 플러그인을 비활성화 합니다.");
             plugin.setEnabled(false);
             return;
         }
         core = (UniversalCore) pl;
-        getLogger().info("LegendaryCash has been enabled!");
         ConfigUtils.loadDefaultConfig();
         ShopConfigUtil.loadAllShop();
         plugin.getServer().getPluginManager().registerEvents(new DLCEvent(), plugin);
         getCommand("캐시").setExecutor(new CashCommand());
         getCommand("캐시상점").setExecutor(new CashShopCommand());
-        UpdateChecker.check();
+
+        // DUC 업데이트 체크
+        UpdateChecker.check(plugin);
     }
 
     public void onDisable() {
-        getLogger().info("LegendaryCash has been disabled!");
         for (UUID uuid : udata.keySet()) {
             ConfigUtils.saveData(uuid);
         }

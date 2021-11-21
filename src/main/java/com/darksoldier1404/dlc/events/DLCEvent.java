@@ -4,7 +4,6 @@ import com.darksoldier1404.dlc.LegendaryCash;
 import com.darksoldier1404.dlc.functions.CashFunction;
 import com.darksoldier1404.dlc.functions.CashShopFunction;
 import com.darksoldier1404.dlc.utils.ConfigUtils;
-import com.darksoldier1404.dlc.utils.UpdateChecker;
 import com.darksoldier1404.duc.utils.NBT;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -27,9 +26,6 @@ public class DLCEvent implements Listener {
     public void onJoin(PlayerJoinEvent e) {
         Player p = e.getPlayer();
         ConfigUtils.initData(p.getUniqueId());
-        if(p.isOp()) {
-            UpdateChecker.check(p);
-        }
     }
 
     @EventHandler
