@@ -3,10 +3,9 @@ package com.darksoldier1404.dlc;
 import com.darksoldier1404.dlc.commands.CashCommand;
 import com.darksoldier1404.dlc.commands.CashShopCommand;
 import com.darksoldier1404.dlc.events.DLCEvent;
-import com.darksoldier1404.dlc.utils.ConfigUtils;
 import com.darksoldier1404.dlc.utils.ShopConfigUtil;
+import com.darksoldier1404.dlc.utils.Utils;
 import com.darksoldier1404.duc.UniversalCore;
-import com.darksoldier1404.duc.utils.UpdateChecker;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -39,19 +38,16 @@ public class LegendaryCash extends JavaPlugin {
             return;
         }
         core = (UniversalCore) pl;
-        ConfigUtils.loadDefaultConfig();
+        Utils.loadDefaultConfig();
         ShopConfigUtil.loadAllShop();
         plugin.getServer().getPluginManager().registerEvents(new DLCEvent(), plugin);
         getCommand("캐시").setExecutor(new CashCommand());
         getCommand("캐시상점").setExecutor(new CashShopCommand());
-
-        // DUC 업데이트 체크
-        UpdateChecker.check(plugin);
     }
 
     public void onDisable() {
         for (UUID uuid : udata.keySet()) {
-            ConfigUtils.saveData(uuid);
+            Utils.saveData(uuid);
         }
         ShopConfigUtil.saveAllShop();
     }
