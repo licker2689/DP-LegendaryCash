@@ -1,6 +1,7 @@
 package com.darksoldier1404.dlc.utils;
 
 import com.darksoldier1404.dlc.LegendaryCash;
+import com.darksoldier1404.duc.utils.ConfigUtils;
 import com.google.common.collect.Lists;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -11,7 +12,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 
-public class ConfigUtils {
+public class Utils {
     private static final LegendaryCash plugin = LegendaryCash.getInstance();
 
     public static void initData(UUID uuid) {
@@ -92,16 +93,12 @@ public class ConfigUtils {
 
     // reload config
     public static void reloadConfig() {
-        plugin.config = YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder(), "config.yml"));
+        plugin.config = ConfigUtils.reloadPluginConfig(plugin, plugin.config);
         plugin.prefix = ChatColor.translateAlternateColorCodes('&', plugin.config.getString("Settings.prefix"));
     }
 
     public static void loadDefaultConfig() {
-        File fconfig = new File(plugin.getDataFolder(), "config.yml");
-        if (!fconfig.exists()) {
-            plugin.saveResource("config.yml", false);
-        }
-        plugin.config = YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder(), "config.yml"));
+        plugin.config = ConfigUtils.loadDefaultPluginConfig(plugin);
         plugin.prefix = ChatColor.translateAlternateColorCodes('&', plugin.config.getString("Settings.prefix"));
     }
 }

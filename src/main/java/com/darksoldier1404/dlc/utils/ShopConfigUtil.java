@@ -13,7 +13,7 @@ public class ShopConfigUtil {
         }
         YamlConfiguration shop = new YamlConfiguration();
         shop.set("Shop.Name", name);
-        ConfigUtils.saveData(name, "shops", shop);
+        Utils.saveData(name, "shops", shop);
         plugin.shops.put(name, shop);
         return true;
     }
@@ -22,15 +22,15 @@ public class ShopConfigUtil {
         if (!plugin.shops.containsKey(name)) {
             return false;
         }
-        ConfigUtils.deleteData(name, "shops");
+        Utils.deleteData(name, "shops");
         plugin.shops.remove(name);
         return true;
     }
 
     public static void loadAllShop() {
         plugin.shops.clear();
-        if(ConfigUtils.getData("shops") != null) {
-            ConfigUtils.getData("shops").forEach((shop) -> {
+        if(Utils.getData("shops") != null) {
+            Utils.getData("shops").forEach((shop) -> {
                 plugin.shops.put(shop.getString("Shop.Name"), shop);
             });
         }
@@ -38,7 +38,7 @@ public class ShopConfigUtil {
 
     public static void saveAllShop() {
         plugin.shops.forEach((name, shop) -> {
-            ConfigUtils.saveData(name, "shops", shop);
+            Utils.saveData(name, "shops", shop);
         });
     }
 }

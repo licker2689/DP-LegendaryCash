@@ -1,8 +1,8 @@
 package com.darksoldier1404.dlc.functions;
 
 import com.darksoldier1404.dlc.LegendaryCash;
-import com.darksoldier1404.dlc.utils.ConfigUtils;
-import com.darksoldier1404.dlc.utils.NBT;
+import com.darksoldier1404.dlc.utils.Utils;
+import com.darksoldier1404.duc.utils.NBT;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -18,8 +18,8 @@ public class CashShopFunction {
     private static final LegendaryCash plugin = LegendaryCash.getInstance();
 
     public static ItemStack addDLCNBT(ItemStack item, double cash, double mileage) {
-        item = NBT.setTag(item, "cash", cash);
-        item = NBT.setTag(item, "mileage", mileage);
+        item = NBT.setDoubleTag(item, "cash", cash);
+        item = NBT.setDoubleTag(item, "mileage", mileage);
         return item;
     }
 
@@ -30,11 +30,11 @@ public class CashShopFunction {
     }
 
     public static double getCashPrice(ItemStack item) {
-        return Double.parseDouble(NBT.getStringTag(item, "cash").replace('"', ' ').trim());
+        return NBT.getDoubleTag(item, "cash");
     }
 
     public static double getMileagePrice(ItemStack item) {
-        return Double.parseDouble(NBT.getStringTag(item, "mileage").replace('"', ' ').trim());
+        return NBT.getDoubleTag(item, "mileage");
     }
 
     public static boolean isDLC(ItemStack item) {
@@ -63,7 +63,7 @@ public class CashShopFunction {
             }
         }
 
-        ConfigUtils.saveData(name, "shops", shop);
+        Utils.saveData(name, "shops", shop);
         plugin.currentEditShop.remove(p.getUniqueId());
     }
 
@@ -71,7 +71,7 @@ public class CashShopFunction {
         YamlConfiguration shop = plugin.shops.get(name);
         if (shop.getItemStack("Shop.Items." + slot) != null) {
             shop.set("Shop.Prices." + slot + ".cash", cash);
-            ConfigUtils.saveData(name, "shops", shop);
+            Utils.saveData(name, "shops", shop);
             p.sendMessage(plugin.prefix + "§a캐시 가격이 설정되었습니다. : " + cash + " 캐시");
         } else {
             p.sendMessage(plugin.prefix + "§c해당 슬롯에는 진열된 아이템이 없습니다.");
@@ -82,7 +82,7 @@ public class CashShopFunction {
         YamlConfiguration shop = plugin.shops.get(name);
         if (shop.getItemStack("Shop.Items." + slot) != null) {
             shop.set("Shop.Prices." + slot + ".mileage", mileage);
-            ConfigUtils.saveData(name, "shops", shop);
+            Utils.saveData(name, "shops", shop);
             p.sendMessage(plugin.prefix + "§a마일리지 가격이 설정되었습니다. : " + mileage + " 마일리지");
         } else {
             p.sendMessage(plugin.prefix + "§c해당 슬롯에는 진열된 아이템이 없습니다.");
@@ -163,19 +163,19 @@ public class CashShopFunction {
                     lore = im.getLore();
                 }
                 if(shop.getString("Shop.Prices." + key + ".cash") == null || shop.getInt("Shop.Prices." + key + ".cash") == -1) {
-                    item = NBT.setTag(item, "cash", -1);
+                    item = NBT.setDoubleTag(item, "cash", -1);
                     lore.add("§b좌클릭 구매 : §c캐시 구매 불가.");
                 }else{
-                    String price = shop.getString("Shop.Prices." + key + ".cash");
-                    item = NBT.setTag(item, "cash", price);
+                    double price = shop.getDouble("Shop.Prices." + key + ".cash");
+                    item = NBT.setDoubleTag(item, "cash", price);
                     lore.add("§b좌클릭 구매 : §e" + price + " 캐시");
                 }
                 if(shop.getString("Shop.Prices." + key + ".mileage") == null || shop.getInt("Shop.Prices." + key + ".mileage") == -1) {
-                    item = NBT.setTag(item, "mileage", -1);
+                    item = NBT.setDoubleTag(item, "mileage", -1);
                     lore.add("§b우클릭 구매 : §c마일리지 구매 불가.");
                 }else{
-                    String price = shop.getString("Shop.Prices." + key + ".mileage");
-                    item = NBT.setTag(item, "mileage", price);
+                    double price = shop.getDouble("Shop.Prices." + key + ".mileage");
+                    item = NBT.setDoubleTag(item, "mileage", price);
                     lore.add("§b우클릭 구매 : §e" + price + " 마일리지");
                 }
                 ItemStack r = item.clone();

@@ -1,7 +1,7 @@
 package com.darksoldier1404.dlc.functions;
 
 import com.darksoldier1404.dlc.LegendaryCash;
-import com.darksoldier1404.dlc.utils.NBT;
+import com.darksoldier1404.duc.utils.NBT;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -90,7 +90,7 @@ public class CashFunction {
             }
             im.setLore(lore);
             item.setItemMeta(im);
-            item = NBT.setTag(item, "CASH", cash);
+            item = NBT.setDoubleTag(item, "CASH", cash);
             p.getInventory().addItem(item);
             p.sendMessage(plugin.prefix + "수표로 " + amount + "개의 수표를 뽑았습니다.");
             takeCash(p, cash*amount);
@@ -124,7 +124,7 @@ public class CashFunction {
             }
             im.setLore(lore);
             item.setItemMeta(im);
-            item = NBT.setTag(item, "MILEAGE", mileage);
+            item = NBT.setDoubleTag(item, "MILEAGE", mileage);
             p.getInventory().addItem(item);
             p.sendMessage(plugin.prefix + "마일리지로 " + amount + "개의 수표를 뽑았습니다.");
             takeMileage(p, mileage);

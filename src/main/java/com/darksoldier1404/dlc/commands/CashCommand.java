@@ -2,7 +2,7 @@ package com.darksoldier1404.dlc.commands;
 
 import com.darksoldier1404.dlc.LegendaryCash;
 import com.darksoldier1404.dlc.functions.CashFunction;
-import com.darksoldier1404.dlc.utils.ConfigUtils;
+import com.darksoldier1404.dlc.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -238,7 +238,7 @@ public class CashCommand implements CommandExecutor, TabCompleter {
                 }
             }
             if (args[0].equals("리로드")) {
-                ConfigUtils.reloadConfig();
+                Utils.reloadConfig();
                 p.sendMessage(prefix + "콘피그 파일을 리로드하였습니다.");
                 return false;
             }
