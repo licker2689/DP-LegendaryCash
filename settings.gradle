@@ -1,1 +1,3 @@
 rootProject.name = 'DP-LegendaryCash'
+include 'v1_12_2'
+
