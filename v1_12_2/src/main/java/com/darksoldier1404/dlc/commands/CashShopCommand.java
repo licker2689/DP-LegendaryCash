@@ -22,10 +22,11 @@ public class CashShopCommand implements CommandExecutor, TabCompleter {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        if (!(sender instanceof Player p)) {
+        if (!(sender instanceof Player)) {
             sender.sendMessage(prefix + "§c플레이어만 사용 가능한 명령어 입니다.");
             return false;
         }
+        Player p = (Player) sender;
         if (args.length == 0) {
             p.sendMessage(prefix + "/캐시상점 오픈 <상점이름> - 해당 캐시 상점을 오픈합니다.");
             p.sendMessage(prefix + "/캐시상점 목록 - 모든 캐시 상점의 목록을 표시합니다.");
