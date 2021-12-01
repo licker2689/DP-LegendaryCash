@@ -83,7 +83,6 @@ public class CashFunction {
             item.setAmount(amount);
             ItemMeta im = item.getItemMeta();
             im.setDisplayName(ChatColor.translateAlternateColorCodes('&', getCashCheckDisplayName().replace("<cash>", String.valueOf(cash))));
-            im.setCustomModelData(getCashCheckCMI());
             List<String> lore = getCashCheckLore();
             for(int i = 0; i < lore.size(); i++){
                 lore.set(i, ChatColor.translateAlternateColorCodes('&', lore.get(i).replace("<cash>", String.valueOf(cash))));
@@ -117,7 +116,6 @@ public class CashFunction {
             item.setAmount(amount);
             ItemMeta im = item.getItemMeta();
             im.setDisplayName(ChatColor.translateAlternateColorCodes('&', getMileageCheckDisplayName().replace("<mileage>", String.valueOf(mileage))));
-            im.setCustomModelData(getMileageCheckCMI());
             List<String> lore = getMileageCheckLore();
             for(int i = 0; i < lore.size(); i++){
                 lore.set(i, ChatColor.translateAlternateColorCodes('&', lore.get(i).replace("<mileage>", String.valueOf(mileage))));

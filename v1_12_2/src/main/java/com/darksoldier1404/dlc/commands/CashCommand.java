@@ -21,10 +21,11 @@ public class CashCommand implements CommandExecutor, TabCompleter {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        if (!(sender instanceof Player p)) {
+        if (!(sender instanceof Player)) {
             sender.sendMessage(prefix + "§c플레이어만 사용 가능한 명령어 입니다.");
             return false;
         }
+        Player p = (Player) sender;
         if (args.length == 0) {
             p.sendMessage(prefix + "§a/캐시 확인 - 자신이 보유중인 캐시와 마일리지를 확인합니다.");
             p.sendMessage(prefix + "§a/캐시 확인 <닉네임> - 다른 유저의 캐시와 마일리지를 확인합니다. (상대가 보기를 허용중일 경우)");
