@@ -1,7 +1,7 @@
 name: DP-LegendaryCash
-version: 1.0.1.55
+version: 1.0.1.53
 main: com.darksoldier1404.dlc.LegendaryCash
-api-version: 1.18
+api-version: 1.17
 authors: [ DEAD_POOLIO_ ]
 depend:
   - DP-UniversalCore
