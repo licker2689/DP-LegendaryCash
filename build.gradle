@@ -9,14 +9,14 @@ tasks.withType(JavaCompile) {
 }
 
 group 'github.com/darksoldier1404'
-version = '1.0.1.53'
+version = '1.0.1.55'
 
 jar {
-    destinationDirectory.set(file("C:\\Minecraft Servers\\1.17.1 Play Ground\\plugins\\"))
+    destinationDirectory.set(file("C:\\Minecraft Servers\\1.18 Play Ground\\plugins\\"))
 }
 
 task deleteMyFile(type: Delete) {
-    delete "C:\\Minecraft Servers\\1.17.1 Play Ground\\plugins\\DP-LegendaryCash-" + version + ".jar"
+    delete "C:\\Minecraft Servers\\1.18 Play Ground\\plugins\\DP-LegendaryCash-" + version + ".jar"
 }
 
 task DS_BUILD {
