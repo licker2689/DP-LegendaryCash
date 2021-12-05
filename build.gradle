@@ -76,7 +76,7 @@ dependencies {
     compileOnly "io.papermc.paper:paper-api:1.18-R0.1-SNAPSHOT"
     compileOnly 'net.essentialsx:EssentialsX:2.19.0'
     compileOnly "org.bstats:bstats-bukkit:2.2.1"
-    compileOnly 'com.darksoldier1404.duc:DP-UniversalCore:1.0.3.82'
+    compileOnly 'com.darksoldier1404.duc:DP-UniversalCore:1.0.3.123:1.18'
 }
 java {
     toolchain.languageVersion.set(JavaLanguageVersion.of(17))

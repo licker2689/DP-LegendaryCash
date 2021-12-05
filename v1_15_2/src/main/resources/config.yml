@@ -14,7 +14,7 @@ Settings:
   # 수표 아이템 커스터마이징
   # 플레이스 홀더 : <cash> <mileage>
   cashCheckItem:
-    # 수표 아이템 타입  (변경전에 만들어진 수표는 변경후에도 사용 가능합니다.) 참고 : https://papermc.io/javadocs/paper/1.16/org/bukkit/Material.html
+    # 수표 아이템 타입  (변경전에 만들어진 수표는 변경후에도 사용 가능합니다.) 참고 : https://papermc.io/javadocs/paper/1.15/org/bukkit/Material.html
     ItemType: "PAPER"
     # 수표 아이템 CustomModelData (리소스팩에 사용되는 커스텀 모델 데이터 아이디 입니다.)
     CustomModelData: 0
