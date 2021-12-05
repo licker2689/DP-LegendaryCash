@@ -10,6 +10,9 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/v1_12_2" />
+            <option value="$PROJECT_DIR$/v1_13_2" />
+            <option value="$PROJECT_DIR$/v1_14_4" />
+            <option value="$PROJECT_DIR$/v1_15_2" />
             <option value="$PROJECT_DIR$/v1_16_5" />
             <option value="$PROJECT_DIR$/v1_17_1" />
           </set>
