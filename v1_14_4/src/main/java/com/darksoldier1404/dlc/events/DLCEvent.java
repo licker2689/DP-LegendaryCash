@@ -66,13 +66,13 @@ public class DLCEvent implements Listener {
             ItemStack item = e.getItem();
             if(e.getItem().getItemMeta() == null) return;
             if(NBT.hasTagKey(e.getItem(), "CASH")) {
-                double cash = Double.parseDouble(NBT.getStringTag(e.getItem(), "CASH").replace('"', ' ').trim());
+                double cash = NBT.getDoubleTag(e.getItem(), "CASH");
                 CashFunction.addCash(p, cash);
                 item.setAmount(item.getAmount() - 1);
                 p.sendMessage(plugin.prefix + "§e" + cash + "§a캐시를 획득했습니다.");
             }
             else if(NBT.hasTagKey(e.getItem(), "MILEAGE")) {
-                double mileage = Double.parseDouble(NBT.getStringTag(e.getItem(), "MILEAGE").replace('"', ' ').trim());
+                double mileage = NBT.getDoubleTag(e.getItem(), "MILEAGE");
                 CashFunction.addMileage(p, mileage);
                 item.setAmount(item.getAmount() - 1);
                 p.sendMessage(plugin.prefix + "§e" + mileage + "§a마일리지를 획득했습니다.");
