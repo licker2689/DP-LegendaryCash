@@ -1,4 +1,5 @@
 rootProject.name = 'DP-LegendaryCash'
 include 'v1_12_2'
 include 'v1_17_1'
+include 'v1_16_5'
 
