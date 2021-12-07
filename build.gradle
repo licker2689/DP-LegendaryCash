@@ -14,7 +14,9 @@ version = '1.0.1.58'
 task deleteMyFile(type: Delete) {
     delete "C:\\Minecraft Servers\\1.18 Play Ground\\plugins\\DP-LegendaryCash-" + version + ".jar"
 }
-
+configurations {
+    jar.archiveName = 'DP-LegendaryCash-_v1_18-' + version + '.jar'
+}
 task DS_BUILD {
     doFirst {
         def v = buildFile.getText().find(version)
