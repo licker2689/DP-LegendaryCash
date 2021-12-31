@@ -17,7 +17,7 @@ build {
 }
 
 group 'github.com/darksoldier1404'
-version = '1.0.1.58'
+version = '1.0.1.69'
 configurations {
     jar.archiveName = 'DP-LegendaryCash-_' + name + '-' + version + '.jar'
 }
@@ -37,19 +37,19 @@ repositories {
         url 'https://repo.spring.io/plugins-release/'
     }
     maven {
-        url "http://dpnw.site:8081/repository/maven-releases/"
+        url "http://dpnw.site:8081/repository/maven-public/"
         allowInsecureProtocol = true
     }
 }
 
 dependencies {
-    implementation 'org.jetbrains:annotations:20.1.0'
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+    implementation 'org.jetbrains:annotations:22.0.0'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
     compileOnly 'org.spigotmc:spigot:1.16.5-R0.1-SNAPSHOT'
     compileOnly 'net.essentialsx:EssentialsX:2.19.0'
     compileOnly "org.bstats:bstats-bukkit:2.2.1"
-    compileOnly 'com.darksoldier1404.duc:DP-UniversalCore:1.0.3.123:1.16.5'
+    compileOnly 'com.darksoldier1404.duc:DP-UniversalCore:1.16.5-SNAPSHOT'
 }
 
 test {

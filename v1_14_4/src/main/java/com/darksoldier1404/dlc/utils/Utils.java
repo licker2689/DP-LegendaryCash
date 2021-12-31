@@ -1,6 +1,7 @@
 package com.darksoldier1404.dlc.utils;
 
 import com.darksoldier1404.dlc.LegendaryCash;
+import com.darksoldier1404.duc.lang.DLang;
 import com.darksoldier1404.duc.utils.ConfigUtils;
 import com.google.common.collect.Lists;
 import org.bukkit.ChatColor;
@@ -25,6 +26,8 @@ public class Utils {
             try {
                 data.save(new File(plugin.getDataFolder() + "/data", uuid + ".yml"));
                 plugin.udata.put(uuid, data);
+                plugin.ucash.put(uuid, data.getDouble("Player.CASH"));
+                plugin.umileage.put(uuid, data.getDouble("Player.MILEAGE"));
             } catch (IOException e1) {
                 e1.printStackTrace();
             }
@@ -32,19 +35,23 @@ public class Utils {
             YamlConfiguration data = YamlConfiguration
                     .loadConfiguration(new File(plugin.getDataFolder() + "/data", uuid + ".yml"));
             plugin.udata.put(uuid, data);
+            plugin.ucash.put(uuid, data.getDouble("Player.CASH"));
+            plugin.umileage.put(uuid, data.getDouble("Player.MILEAGE"));
         }
     }
 
-    public static void saveData(UUID uuid) {
+    public static void saveData(UUID uuid) { // for user data
         YamlConfiguration data = plugin.udata.get(uuid);
         try {
+            data.set("Player.CASH", plugin.ucash.get(uuid));
+            data.set("Player.MILEAGE", plugin.umileage.get(uuid));
             data.save(new File(plugin.getDataFolder() + "/data", uuid + ".yml"));
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public static void saveData(String key, String path, YamlConfiguration data) {
+    public static void saveData(String key, String path, YamlConfiguration data) { // for shop
         try {
             data.save(new File(plugin.getDataFolder() + "/" + path, key + ".yml"));
         } catch (IOException e) {
@@ -57,14 +64,6 @@ public class Utils {
         if (file.exists()) {
             file.delete();
         }
-    }
-
-    public static YamlConfiguration getData(String key, String path) {
-        File file = new File(plugin.getDataFolder() + "/" + path, key + ".yml");
-        if (!file.exists()) {
-            return null;
-        }
-        return YamlConfiguration.loadConfiguration(file);
     }
 
     @Nullable
@@ -89,6 +88,10 @@ public class Utils {
     public static void quitAndSaveData(UUID uuid) {
         saveData(uuid);
         plugin.udata.remove(uuid);
+        plugin.ucash.remove(uuid);
+        plugin.umileage.remove(uuid);
+        plugin.dphm.unregister(uuid + "_cash");
+        plugin.dphm.unregister(uuid + "_mileage");
     }
 
     // reload config
@@ -100,5 +103,29 @@ public class Utils {
     public static void loadDefaultConfig() {
         plugin.config = ConfigUtils.loadDefaultPluginConfig(plugin);
         plugin.prefix = ChatColor.translateAlternateColorCodes('&', plugin.config.getString("Settings.prefix"));
+    }
+
+    public static void loadDefaultLangFiles() {
+        File f = new File(plugin.getDataFolder()+"/lang", "Korean.yml");
+        if (!f.exists()) {
+            plugin.saveResource("lang/Korean.yml", false);
+        }
+        f = new File(plugin.getDataFolder()+"/lang", "English.yml");
+        if (!f.exists()) {
+            plugin.saveResource("lang/English.yml", false);
+        }
+        for(YamlConfiguration data : ConfigUtils.loadCustomDataList(plugin, "lang")) {
+            try{
+                plugin.langFiles.put(data.getString("Lang"), data);
+            }catch(Exception e) {
+                System.out.println(plugin.prefix + "Error loading lang file: " + data.getName());
+            }
+        }
+        if(plugin.config.get("Settings.lang") == null) {
+            plugin.config.set("Settings.lang", "English");
+            plugin.lang = new DLang(plugin.langFiles.get("English"));
+        }else{
+            plugin.lang = new DLang(plugin.langFiles.get(plugin.config.getString("Settings.lang")));
+        }
     }
 }

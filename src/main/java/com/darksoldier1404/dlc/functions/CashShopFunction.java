@@ -2,6 +2,7 @@ package com.darksoldier1404.dlc.functions;
 
 import com.darksoldier1404.dlc.LegendaryCash;
 import com.darksoldier1404.dlc.utils.Utils;
+import com.darksoldier1404.duc.lang.DLang;
 import com.darksoldier1404.duc.utils.NBT;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -16,6 +17,8 @@ import java.util.List;
 @SuppressWarnings("all")
 public class CashShopFunction {
     private static final LegendaryCash plugin = LegendaryCash.getInstance();
+    private static final String prefix = plugin.prefix;
+    private static final DLang lang = plugin.lang;
 
     public static ItemStack addDLCNBT(ItemStack item, double cash, double mileage) {
         item = NBT.setDoubleTag(item, "cash", cash);
@@ -44,7 +47,7 @@ public class CashShopFunction {
 
     public static void openShopShowCase(Player p, String name) {
         plugin.currentEditShop.put(p.getUniqueId(), name);
-        Inventory inv = Bukkit.createInventory(null, 54, "§1" + name + " 캐시상점 진열");
+        Inventory inv = Bukkit.createInventory(null, 54, lang.getWithArgs("shop_display_gui_title", name));
         YamlConfiguration shop = plugin.shops.get(name);
         if(shop.getConfigurationSection("Shop.Items") != null) {
             for (String key : shop.getConfigurationSection("Shop.Items").getKeys(false)) {
@@ -62,7 +65,7 @@ public class CashShopFunction {
                 shop.set("Shop.Items." + i, inv.getItem(i));
             }
         }
-
+        p.sendMessage(prefix + lang.getWithArgs("shop_display_gui_save_successful", name));
         Utils.saveData(name, "shops", shop);
         plugin.currentEditShop.remove(p.getUniqueId());
     }
@@ -72,9 +75,9 @@ public class CashShopFunction {
         if (shop.getItemStack("Shop.Items." + slot) != null) {
             shop.set("Shop.Prices." + slot + ".cash", cash);
             Utils.saveData(name, "shops", shop);
-            p.sendMessage(plugin.prefix + "§a캐시 가격이 설정되었습니다. : " + cash + " 캐시");
+            p.sendMessage(prefix + lang.getWithArgs("shop_cmd_cash_price_set_successful", String.valueOf(cash)));
         } else {
-            p.sendMessage(plugin.prefix + "§c해당 슬롯에는 진열된 아이템이 없습니다.");
+            p.sendMessage(prefix + lang.get("shop_display_no_item_in_slot"));
         }
     }
 
@@ -83,25 +86,25 @@ public class CashShopFunction {
         if (shop.getItemStack("Shop.Items." + slot) != null) {
             shop.set("Shop.Prices." + slot + ".mileage", mileage);
             Utils.saveData(name, "shops", shop);
-            p.sendMessage(plugin.prefix + "§a마일리지 가격이 설정되었습니다. : " + mileage + " 마일리지");
+            p.sendMessage(prefix + lang.getWithArgs("shop_cmd_mileage_price_set_successful", String.valueOf(mileage)));
         } else {
-            p.sendMessage(plugin.prefix + "§c해당 슬롯에는 진열된 아이템이 없습니다.");
+            p.sendMessage(prefix + lang.get("shop_display_no_item_in_slot"));
         }
     }
 
     public static void buyWithCash(Player p, ItemStack item) {
         if(item == null) return;
         if (NBT.getStringTag(item, "cash") == null || NBT.getStringTag(item, "cash").contains("-1")) {
-            p.sendMessage(plugin.prefix + "§c캐시로 구매할 수 없습니다.");
+            p.sendMessage(prefix + lang.get("shop_cant_buy_with_cash"));
             return;
         }
         double cash = getCashPrice(item);
         if (p.getInventory().firstEmpty() == -1) {
-            p.sendMessage(plugin.prefix + "§c인벤토리 공간이 부족합니다.");
+            p.sendMessage(prefix + lang.get("inventory_is_full"));
             return;
         }
         if (!CashFunction.isEnoughCash(p, cash)) {
-            p.sendMessage(plugin.prefix + "§c캐시가 부족합니다.");
+            p.sendMessage(prefix + lang.get("not_enough_cash"));
             return;
         }
         CashFunction.takeCash(p, cash);
@@ -115,22 +118,22 @@ public class CashShopFunction {
         im.setLore(lore);
         r.setItemMeta(im);
         p.getInventory().addItem(r);
-        p.sendMessage(plugin.prefix + "§a구매에 성공하였습니다.");
+        p.sendMessage(prefix + lang.get("shop_buy_successful"));
     }
 
     public static void buyWithMileage(Player p, ItemStack item) {
         if(item == null) return;
         if (NBT.getStringTag(item, "mileage") == null || NBT.getStringTag(item, "mileage").contains("-1")) {
-            p.sendMessage(plugin.prefix + "§c마일리지로 구매할 수 없습니다.");
+            p.sendMessage(prefix + lang.get("shop_cant_buy_with_mileage"));
             return;
         }
         double mileage = getMileagePrice(item);
         if (p.getInventory().firstEmpty() == -1) {
-            p.sendMessage(plugin.prefix + "§c인벤토리 공간이 부족합니다.");
+            p.sendMessage(prefix + lang.get("inventory_is_full"));
             return;
         }
         if (!CashFunction.isEnoughMileage(p, mileage)) {
-            p.sendMessage(plugin.prefix + "§c마일리지가 부족합니다.");
+            p.sendMessage(prefix + lang.get("not_enough_mileage"));
             return;
         }
         CashFunction.takeMileage(p, mileage);
@@ -144,15 +147,15 @@ public class CashShopFunction {
         im.setLore(lore);
         r.setItemMeta(im);
         p.getInventory().addItem(r);
-        p.sendMessage(plugin.prefix + "§a구매에 성공하였습니다.");
+        p.sendMessage(prefix + lang.get("shop_buy_successful"));
     }
 
     public static void openShop(Player p, String name) {
         if(!plugin.shops.containsKey(name)) {
-            p.sendMessage(plugin.prefix + "§c존재하지 않는 캐시상점 입니다.");
+            p.sendMessage(prefix + lang.get("shop_is_not_exists"));
             return;
         }
-        Inventory inv = Bukkit.createInventory(null, 54, "§1" + name + " 캐시상점 아이템 목록");
+        Inventory inv = Bukkit.createInventory(null, 54, lang.getWithArgs("shop_open_gui_title", name));
         YamlConfiguration shop = plugin.shops.get(name);
         if(shop.getConfigurationSection("Shop.Items") != null) {
             for (String key : shop.getConfigurationSection("Shop.Items").getKeys(false)) {
@@ -164,19 +167,19 @@ public class CashShopFunction {
                 }
                 if(shop.getString("Shop.Prices." + key + ".cash") == null || shop.getInt("Shop.Prices." + key + ".cash") == -1) {
                     item = NBT.setDoubleTag(item, "cash", -1);
-                    lore.add("§b좌클릭 구매 : §c캐시 구매 불가.");
+                    lore.add(lang.get("shop_item_lore_cant_buy_with_cash"));
                 }else{
                     double price = shop.getDouble("Shop.Prices." + key + ".cash");
                     item = NBT.setDoubleTag(item, "cash", price);
-                    lore.add("§b좌클릭 구매 : §e" + price + " 캐시");
+                    lore.add(lang.get("shop_item_lore_can_buy_with_cash"));
                 }
                 if(shop.getString("Shop.Prices." + key + ".mileage") == null || shop.getInt("Shop.Prices." + key + ".mileage") == -1) {
                     item = NBT.setDoubleTag(item, "mileage", -1);
-                    lore.add("§b우클릭 구매 : §c마일리지 구매 불가.");
+                    lore.add(lang.get("shop_item_lore_cant_buy_with_mileage"));
                 }else{
                     double price = shop.getDouble("Shop.Prices." + key + ".mileage");
                     item = NBT.setDoubleTag(item, "mileage", price);
-                    lore.add("§b우클릭 구매 : §e" + price + " 마일리지");
+                    lore.add(lang.get("shop_item_lore_can_buy_with_mileage"));
                 }
                 ItemStack r = item.clone();
                 ItemMeta rm = r.getItemMeta();

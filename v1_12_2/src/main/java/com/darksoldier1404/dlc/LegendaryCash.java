@@ -6,6 +6,9 @@ import com.darksoldier1404.dlc.events.DLCEvent;
 import com.darksoldier1404.dlc.utils.ShopConfigUtil;
 import com.darksoldier1404.dlc.utils.Utils;
 import com.darksoldier1404.duc.UniversalCore;
+import com.darksoldier1404.duc.api.placeholder.DPHManager;
+import com.darksoldier1404.duc.api.placeholder.DPlaceHolder;
+import com.darksoldier1404.duc.lang.DLang;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -14,14 +17,20 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+@SuppressWarnings("all")
 public class LegendaryCash extends JavaPlugin {
     private UniversalCore core;
     private static LegendaryCash plugin;
     public String prefix;
     public YamlConfiguration config;
-    public Map<UUID, YamlConfiguration> udata = new HashMap<>();
-    public Map<String, YamlConfiguration> shops = new HashMap<>();
-    public Map<UUID, String> currentEditShop = new HashMap<>();
+    public final Map<UUID, YamlConfiguration> udata = new HashMap<>();
+    public final Map<UUID, Double> ucash = new HashMap<>();
+    public final Map<UUID, Double> umileage = new HashMap<>();
+    public final Map<String, YamlConfiguration> shops = new HashMap<>();
+    public final Map<UUID, String> currentEditShop = new HashMap<>();
+    public Map<String, YamlConfiguration> langFiles = new HashMap<>();
+    public DLang lang;
+    public DPHManager dphm;
 
     public static LegendaryCash getInstance() {
         return plugin;
@@ -38,11 +47,15 @@ public class LegendaryCash extends JavaPlugin {
             return;
         }
         core = (UniversalCore) pl;
+        dphm = core.dphm;
         Utils.loadDefaultConfig();
+        Utils.loadDefaultLangFiles();
         ShopConfigUtil.loadAllShop();
         plugin.getServer().getPluginManager().registerEvents(new DLCEvent(), plugin);
         getCommand("캐시").setExecutor(new CashCommand());
         getCommand("캐시상점").setExecutor(new CashShopCommand());
+        dphm.register(new DPlaceHolder(plugin.getServer().getConsoleSender(), "cash", ucash, true), "cash");
+        dphm.register(new DPlaceHolder(plugin.getServer().getConsoleSender(), "mileage", umileage, true), "mileage");
     }
 
     public void onDisable() {
