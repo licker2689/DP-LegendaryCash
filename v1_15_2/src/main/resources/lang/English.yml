@@ -1,0 +1,99 @@
+Lang: "Korean"
+
+# command info
+cash_cmd_balance: "&a/cash bal - check the cash and mileage you have."
+cash_cmd_balance_others: "&a/cash 확인 <닉네임> - check the cash and mileage other player have. (if that player is allowed to see)"
+cash_cmd_balance_public: "§a/cash public - make other player can see my cash and mileage or not. (toggle)"
+cash_cmd_transfer: "§a/cash 송금 C/M <닉네임> <금액> - transfer cash or mileage to other player."
+cash_cmd_check: "§a/cash 수표 C/M <금액> (수량) - get check from my cash or mileage."
+cash_cmd_admin_give: "§a/cash 주기 C/M <닉네임> <금액> - give cash or mileage to player."
+cash_cmd_admin_take: "§a/cash 빼기 C/M <닉네임> <금액> - take cash or mileage to player."
+cash_cmd_admin_set: "§a/cash 설정 C/M <닉네임> <금액> - set cash or mileage to player."
+
+# balance command
+balance_cmd_balance_cash: "my cash : {cash}"
+balance_cmd_balance_mileage: "my mileage : {mileage}"
+balance_cmd_others_cash: "that player's cash : {cash}"
+balance_cmd_others_mileage: "that player's mileage : {mileage}"
+balance_cmd_others_deny: "this player is not allowed to see it."
+
+# public command
+public_cmd_public_on: "now other player can see my cash or mileage."
+public_cmd_public_off: "now other player can't see my cash or mileage."
+
+# transfer command
+transfer_cmd_transfer_cash: "cash transferred : "
+transfer_cmd_transfer_mileage: "mileage transferred. : "
+transfer_cmd_cant_send_to_me: "can't transfer to myself."
+transfer_cmd_amount_too_small: "amount is too small."
+transfer_cmd_cash_successfully_transferred: "{0} 캐시를 {1} 에게 송금했습니다."
+transfer_cmd_mileage_successfully_transferred: "{0} 마일리지를 {1} 에게 송금했습니다."
+
+# check command
+check_cmd_cant_use: "수표 기능을 사용할 수 없습니다."
+check_cmd_cash_minimum_amount: "수표로 뽑을 수 있는 최소 금액은 {0} 캐시 입니다."
+check_cmd_mileage_minimum_amount: "수표로 뽑을 수 있는 최소 금액은 {0} 마일리지 입니다."
+check_cmd_check_item_is_not_set: "수표로 뽑을 수 있는 아이템이 설정되지 않았습니다."
+check_cmd_cash_successfully_printed: "캐시로 {0}개의 수표를 뽑았습니다."
+check_cmd_mileage_successfully_printed: "마일리지로 {0}개의 수표를 뽑았습니다."
+
+# admin commands
+give_cmd_cash_successful: "{0}에게 {1}만큼의 캐시를 지급합니다."
+give_cmd_mileage_successful: "{0}에게 {1}만큼의 마일리지를 지급합니다."
+take_cmd_cash_successful: "{0}의 {1}만큼의 캐시를 회수합니다."
+take_cmd_mileage_successful: "{0}의 {1}만큼의 마일리지를 회수합니다."
+set_cmd_cash_successful: "{0}의 캐시를 {1}으로 설정합니다."
+set_cmd_mileage_successful: "{0}의 마일리지를 {1}으로 설정합니다."
+reload_cmd_successful: "콘피그 파일을 리로드 하였습니다."
+
+# shop commands
+shop_cmd_open: "/cash상점 오픈 <상점이름> - 해당 캐시 상점을 오픈합니다."
+shop_cmd_list: "/cash상점 목록 - 모든 캐시 상점의 목록을 표시합니다."
+shop_cmd_create: "/cash상점 생성 <상점이름> - 캐시 상점을 생성합니다."
+shop_cmd_display: "/cash상점 진열 <상점이름> - 캐시 상점에 아이템을 진열하기 위한 창을 엽니다."
+shop_cmd_price: "/cash상점 가격 <상점이름> <C/M> <슬롯> <가격> - 해당 캐시상점의 해당 슬롯의 아이템의 가격을 설정합니다."
+shop_cmd_price_info: "* 가격을 -1원으로 설정하면 구매 불가로 설정됩니다."
+shop_cmd_delete: "/cash상점 삭제 <상점이름> - 캐시 상점을 삭제합니다."
+shop_cmd_reload: "/cash상점 리로드/rl - 콘피그 파일과 상점 파일을 리로드 합니다."
+shop_is_already_exists: "이미 존재하는 상점 입니다."
+shop_is_not_exists: "존재하지 않는 상점 입니다."
+shop_create_successful: "{0} 캐시상점이 생성되었습니다."
+shop_create_slot_required: "슬롯의 번호를 입력해주세요. 0~53"
+shop_delete_successful: "{0} 캐시 상점이 삭제되었습니다."
+shop_display_gui_save_successful: "{0} 캐시상점 진열이 저장되었습니다."
+shop_cmd_cash_price_set_successful: "캐시 가격이 설정되었습니다. : {0} 캐시"
+shop_cmd_mileage_price_set_successful: "마일리지 가격이 설정되었습니다. : {0} 마일리지"
+shop_display_no_item_in_slot: "해당 슬롯에는 진열된 아이템이 없습니다."
+
+# shop gui
+shop_display_gui_title: "&1{0} 캐시상점 진열"
+shop_open_gui_title: "&1{0} 캐시 상점 아이템 목록"
+shop_item_lore_cant_buy_with_cash: "§b좌클릭 구매 : §c캐시 구매 불가."
+shop_item_lore_can_buy_with_cash: "§b좌클릭 구매 : {0} 캐시"
+shop_item_lore_cant_buy_with_mileage: "§b우클릭 구매 : §c마일리지 구매 불가."
+shop_item_lore_can_buy_with_mileage: "§b우클릭 구매 : {0} 마일리지"
+
+
+# shop messages
+shop_cant_buy_with_cash: "캐시로 구매할 수 없는 아이템 입니다."
+shop_cant_buy_with_mileage: "마일리지로 구매할 수 없는 아이템 입니다."
+shop_buy_successful: "구매에 성공하였습니다."
+
+
+
+
+
+# global
+target_player_is_offline: "존재하지 않거나 오프라인 플레이어입니다."
+target_player_name_required: "플레이어의 닉네임을 입력해주세요."
+not_enough_cash: "캐시가 부족합니다."
+not_enough_mileage: "마일리지가 부족합니다."
+amount_required: "금액을 입력해주세요!"
+command_is_not_valid: "명령어가 옳바르지 않습니다."
+inventory_is_full: "인벤토리 공간이 부족합니다."
+value_is_negative: "음수는 입력이 불가능합니다."
+amount_is_not_number: "금액이 숫자가 아닙니다."
+insert_type_of_fund: "자금 종류를 입력해주세요! <C/M>"
+type_of_fund_is_not_valid: "자금 종류가 옳바르지 않습니다."
+shop_name_required: "상점 이름을 입력해주세요."
+shop_slot_is_not_valid: "옳바르지 않은 슬롯 번호입니다."

@@ -12,11 +12,15 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.player.PlayerChatEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
+
+import java.util.HashMap;
+import java.util.UUID;
 
 @SuppressWarnings("all")
 public class DLCEvent implements Listener {
@@ -32,6 +36,17 @@ public class DLCEvent implements Listener {
     public void onQuit(PlayerQuitEvent e) {
         Player p = e.getPlayer();
         Utils.quitAndSaveData(p.getUniqueId());
+    }
+
+    @EventHandler
+    public void onChat(PlayerChatEvent e) {
+        String msg = e.getMessage();
+        if(msg.contains("{cash}")) {
+            e.setMessage(e.getMessage().replace("{cash}", ((HashMap<UUID, Double>)plugin.dphm.getPlaceholder("cash").getValue()).get(e.getPlayer().getUniqueId())+""));
+        }
+        if(msg.contains("{mileage}")) {
+            e.setMessage(e.getMessage().replace("{mileage}", ((HashMap<UUID, Double>)plugin.dphm.getPlaceholder("mileage").getValue()).get(e.getPlayer().getUniqueId())+""));
+        }
     }
 
     @EventHandler

@@ -3,6 +3,7 @@ package com.darksoldier1404.dlc.commands;
 import com.darksoldier1404.dlc.LegendaryCash;
 import com.darksoldier1404.dlc.functions.CashFunction;
 import com.darksoldier1404.dlc.utils.Utils;
+import com.darksoldier1404.duc.lang.DLang;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -17,7 +18,9 @@ import java.util.Arrays;
 import java.util.List;
 
 public class CashCommand implements CommandExecutor, TabCompleter {
+    private final LegendaryCash plugin = LegendaryCash.getInstance();
     private final String prefix = LegendaryCash.getInstance().prefix;
+    private final DLang lang = plugin.lang;
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
@@ -26,36 +29,36 @@ public class CashCommand implements CommandExecutor, TabCompleter {
             return false;
         }
         if (args.length == 0) {
-            p.sendMessage(prefix + "§a/캐시 확인 - 자신이 보유중인 캐시와 마일리지를 확인합니다.");
-            p.sendMessage(prefix + "§a/캐시 확인 <닉네임> - 다른 유저의 캐시와 마일리지를 확인합니다. (상대가 보기를 허용중일 경우)");
-            p.sendMessage(prefix + "§a/캐시 공개 - 자신의 캐시와 마일리지의 공개 여부를 설정합니다. (토글방식)");
-            p.sendMessage(prefix + "§a/캐시 송금 C/M <닉네임> <금액> - 상대방에게 자신의 캐시 또는 마일리지를 송금합니다.");
-            p.sendMessage(prefix + "§a/캐시 수표 C/M <금액> (수량) - 캐시 또는 마일리지를 수표로 만듭니다.");
+            p.sendMessage(prefix + lang.get("cash_cmd_balance"));
+            p.sendMessage(prefix + lang.get("cash_cmd_balance_others"));
+            p.sendMessage(prefix + lang.get("cash_cmd_balance_public"));
+            p.sendMessage(prefix + lang.get("cash_cmd_transfer"));
+            p.sendMessage(prefix + lang.get("cash_cmd_check"));
             if (p.isOp()) {
-                p.sendMessage(prefix + "§a/캐시 주기 C/M <닉네임> <금액> - 해당 플레이어에게 캐시 또는 마일리지를 줍니다.");
-                p.sendMessage(prefix + "§a/캐시 빼기 C/M <닉네임> <금액> - 해당 플레이어의 캐시 또는 마일리지를 가져옵니다.");
-                p.sendMessage(prefix + "§a/캐시 설정 C/M <닉네임> <금액> - 해당 플레이어의 캐시 또는 마일리지를 설정합니다.");
+                p.sendMessage(prefix + lang.get("cash_cmd_admin_give"));
+                p.sendMessage(prefix + lang.get("cash_cmd_admin_take"));
+                p.sendMessage(prefix + lang.get("cash_cmd_admin_set"));
             }
             return false;
         }
         if (args[0].equalsIgnoreCase("확인")) {
             if (args.length == 1) {
-                p.sendMessage(prefix + "보유 캐시 : " + CashFunction.getCash(p));
-                p.sendMessage(prefix + "보유 마일리지 : " + CashFunction.getMileage(p));
+                p.sendMessage(prefix + plugin.dphm.getPlaceholder("cash").applyAsPlayer(lang.get("balance_cmd_balance_cash"), p));
+                p.sendMessage(prefix + plugin.dphm.getPlaceholder("mileage").applyAsPlayer(lang.get("balance_cmd_balance_mileage"), p));
                 return false;
             }
             if (args.length == 2) {
                 Player target = p.getServer().getPlayer(args[1]);
                 if (target == null) {
-                    p.sendMessage(prefix + "§c존재하지 않거나 오프라인 플레이어입니다.");
+                    p.sendMessage(prefix + lang.get("target_player_is_offline"));
                     return false;
                 }
                 if (!CashFunction.isOpen(target)) {
-                    p.sendMessage(prefix + "§c" + target.getName() + "님은 캐시 공개가 비활성화 되어 있습니다.");
+                    p.sendMessage(prefix + lang.get("balance_cmd_others_deny"));
                     return false;
                 }
-                p.sendMessage(prefix + "§a" + target.getName() + "님의 보유 캐시 : " + CashFunction.getCash(target));
-                p.sendMessage(prefix + "§a" + target.getName() + "님의 보유 마일리지 : " + CashFunction.getMileage(target));
+                p.sendMessage(prefix + plugin.dphm.getPlaceholder("cash").applyAsPlayer(lang.get("balance_cmd_others_cash"), target));
+                p.sendMessage(prefix + plugin.dphm.getPlaceholder("mileage").applyAsPlayer(lang.get("balance_cmd_others_mileage"), target));
                 return false;
             }
         }
@@ -63,25 +66,25 @@ public class CashCommand implements CommandExecutor, TabCompleter {
             if (args.length == 1) {
                 if (CashFunction.isOpen(p)) {
                     CashFunction.setOpen(p, false);
-                    p.sendMessage(prefix + "§c캐시 공개가 비활성화 되었습니다.");
+                    p.sendMessage(prefix + lang.get("public_cmd_public_off"));
                 } else {
                     CashFunction.setOpen(p, true);
-                    p.sendMessage(prefix + "§a캐시 공개가 활성화 되었습니다.");
+                    p.sendMessage(prefix + lang.get("public_cmd_public_on"));
                 }
                 return false;
             }
         }
         if (args[0].equalsIgnoreCase("송금")) {
             if (args.length == 1) {
-                p.sendMessage(prefix + "송금할 자금 종류를 입력해주세요! <C/M>");
+                p.sendMessage(prefix + lang.get("insert_type_of_fund"));
                 return false;
             }
             if (args.length == 2) {
-                p.sendMessage(prefix + "송금할 대상의 닉네임을 입력해주세요!");
+                p.sendMessage(prefix + lang.get("target_player_name_required"));
                 return false;
             }
             if (args.length == 3) {
-                p.sendMessage(prefix + "송금할 금액을 입력해주세요!");
+                p.sendMessage(prefix + lang.get("amount_required"));
                 return false;
             }
             if (args[1].equalsIgnoreCase("c")) {
@@ -95,11 +98,11 @@ public class CashCommand implements CommandExecutor, TabCompleter {
         }
         if(args[0].equalsIgnoreCase("수표")) {
             if (args.length == 1) {
-                p.sendMessage(prefix + "자금 종류를 입력해주세요! <C/M>");
+                p.sendMessage(prefix + lang.get("insert_type_of_fund"));
                 return false;
             }
             if (args.length == 2) {
-                p.sendMessage(prefix + "금액을 입력해주세요!");
+                p.sendMessage(prefix + lang.get("amount_required"));
                 return false;
             }
             if (args.length == 3) {
@@ -107,7 +110,7 @@ public class CashCommand implements CommandExecutor, TabCompleter {
                     if(CashFunction.canUseCashCheck()) {
                         CashFunction.getCashCheck(p, Double.parseDouble(args[2]), 1);
                     }else{
-                        p.sendMessage(prefix + "수표 기능을 사용할 수 없습니다.");
+                        p.sendMessage(prefix + lang.get("check_cmd_cant_use"));
                     }
                     return false;
                 }
@@ -115,11 +118,11 @@ public class CashCommand implements CommandExecutor, TabCompleter {
                     if(CashFunction.canUseMileageCheck()) {
                         CashFunction.getMileageCheck(p, Double.parseDouble(args[2]), 1);
                     }else{
-                        p.sendMessage(prefix + "수표 기능을 사용할 수 없습니다.");
+                        p.sendMessage(prefix + lang.get("check_cmd_cant_use"));
                     }
                     return false;
                 }
-                p.sendMessage(prefix + "명령어가 옳바르지 않습니다.");
+                p.sendMessage(prefix + lang.get("command_is_not_valid"));
                 return false;
             }
             if (args.length == 4) {
@@ -127,7 +130,7 @@ public class CashCommand implements CommandExecutor, TabCompleter {
                     if(CashFunction.canUseCashCheck()) {
                         CashFunction.getCashCheck(p, Double.parseDouble(args[2]), Integer.parseInt(args[3]));
                     }else{
-                        p.sendMessage(prefix + "수표 기능을 사용할 수 없습니다.");
+                        p.sendMessage(prefix + lang.get("check_cmd_cant_use"));
                     }
                     return false;
                 }
@@ -135,111 +138,111 @@ public class CashCommand implements CommandExecutor, TabCompleter {
                     if(CashFunction.canUseMileageCheck()) {
                         CashFunction.getMileageCheck(p, Double.parseDouble(args[2]), Integer.parseInt(args[3]));
                     }else{
-                        p.sendMessage(prefix + "수표 기능을 사용할 수 없습니다.");
+                        p.sendMessage(prefix + lang.get("check_cmd_cant_use"));
                     }
                     return false;
                 }
-                p.sendMessage(prefix + "명령어가 옳바르지 않습니다.");
+                p.sendMessage(prefix + lang.get("command_is_not_valid"));
                 return false;
             }
         }
         if (p.isOp()) {
             if (args[0].equals("주기")) {
                 if (args.length == 1) {
-                    p.sendMessage(prefix + "지급할 자금 종류를 입력해주세요! <C/M>");
+                    p.sendMessage(prefix + lang.get("insert_type_of_fund"));
                     return false;
                 }
                 if (args.length == 2) {
-                    p.sendMessage(prefix + "지급할 대상의 닉네임을 입력해주세요!");
+                    p.sendMessage(prefix + lang.get("target_player_name_required"));
                     return false;
                 }
                 if (args.length == 3) {
-                    p.sendMessage(prefix + "지급할 금액을 입력해주세요!");
+                    p.sendMessage(prefix + lang.get("amount_required"));
                     return false;
                 }
                 try {
                     Bukkit.getPlayer(args[2]);
                     Double.parseDouble(args[3]);
                 } catch (Exception e) {
-                    p.sendMessage(prefix + "명령어를 다시 확인해주시기 바랍니다.");
+                    p.sendMessage(prefix + lang.get("command_is_not_valid"));
                     return false;
                 }
                 if (args[1].equalsIgnoreCase("c")) {
-                    p.sendMessage(prefix + args[2] + "에게 " + args[3] + "만큼의 캐시를 지급합니다.");
+                    p.sendMessage(prefix + lang.getWithArgs("give_cmd_cash_successful", args[2], args[3]));
                     CashFunction.addCash(Bukkit.getPlayer(args[2]), Double.parseDouble(args[3]));
                     return false;
                 }
                 if (args[1].equalsIgnoreCase("m")) {
-                    p.sendMessage(prefix + args[2] + "에게 " + args[3] + "만큼의 마일리지를 지급합니다.");
+                    p.sendMessage(prefix + lang.getWithArgs("give_cmd_mileage_successful", args[2], args[3]));
                     CashFunction.addMileage(Bukkit.getPlayer(args[2]), Double.parseDouble(args[3]));
                     return false;
                 }
             }
             if (args[0].equals("빼기")) {
                 if (args.length == 1) {
-                    p.sendMessage(prefix + "회수할 자금 종류를 입력해주세요! <C/M>");
+                    p.sendMessage(prefix + lang.get("insert_type_of_fund"));
                     return false;
                 }
                 if (args.length == 2) {
-                    p.sendMessage(prefix + "회수할 대상의 닉네임을 입력해주세요!");
+                    p.sendMessage(prefix + lang.get("target_player_name_required"));
                     return false;
                 }
                 if (args.length == 3) {
-                    p.sendMessage(prefix + "회수할 금액을 입력해주세요!");
+                    p.sendMessage(prefix + lang.get("amount_required"));
                     return false;
                 }
                 try {
                     Bukkit.getPlayer(args[2]);
                     Double.parseDouble(args[3]);
                 } catch (Exception e) {
-                    p.sendMessage(prefix + "명령어를 다시 확인해주시기 바랍니다.");
+                    p.sendMessage(prefix + lang.get("command_is_not_valid"));
                     return false;
                 }
                 if (args[1].equalsIgnoreCase("c")) {
-                    p.sendMessage(prefix + args[2] + "의 " + args[3] + "만큼의 캐시를 회수합니다.");
+                    p.sendMessage(prefix + lang.getWithArgs("take_cmd_cash_successful", args[2], args[3]));
                     CashFunction.takeCash(Bukkit.getPlayer(args[2]), Double.parseDouble(args[3]));
                     return false;
                 }
                 if (args[1].equalsIgnoreCase("m")) {
-                    p.sendMessage(prefix + args[2] + "의 " + args[3] + "만큼의 마일리지를 회수합니다.");
+                    p.sendMessage(prefix + lang.getWithArgs("take_cmd_mileage_successful", args[2], args[3]));
                     CashFunction.takeMileage(Bukkit.getPlayer(args[2]), Double.parseDouble(args[3]));
                     return false;
                 }
             }
             if (args[0].equals("설정")) {
                 if (args.length == 1) {
-                    p.sendMessage(prefix + "설정할 자금 종류를 입력해주세요! <C/M>");
+                    p.sendMessage(prefix + lang.get("insert_type_of_fund"));
                     return false;
                 }
                 if (args.length == 2) {
-                    p.sendMessage(prefix + "설정할 대상의 닉네임을 입력해주세요!");
+                    p.sendMessage(prefix + lang.get("target_player_name_required"));
                     return false;
                 }
                 if (args.length == 3) {
-                    p.sendMessage(prefix + "설정할 금액을 입력해주세요!");
+                    p.sendMessage(prefix + lang.get("amount_required"));
                     return false;
                 }
                 try {
                     Bukkit.getPlayer(args[2]);
                     Double.parseDouble(args[3]);
                 } catch (Exception e) {
-                    p.sendMessage(prefix + "명령어를 다시 확인해주시기 바랍니다.");
+                    p.sendMessage(prefix + lang.get("command_is_not_valid"));
                     return false;
                 }
                 if (args[1].equalsIgnoreCase("c")) {
-                    p.sendMessage(prefix + args[2] + "의 " + args[3] + "만큼의 캐시를 설정합니다.");
+                    p.sendMessage(prefix + lang.getWithArgs("set_cmd_cash_successful", args[2], args[3]));
                     CashFunction.setCash(Bukkit.getPlayer(args[2]), Double.parseDouble(args[3]));
                     return false;
                 }
                 if (args[1].equalsIgnoreCase("m")) {
-                    p.sendMessage(prefix + args[2] + "의 " + args[3] + "만큼의 마일리지를 설정합니다.");
+                    p.sendMessage(prefix + lang.getWithArgs("set_cmd_mileage_successful", args[2], args[3]));
                     CashFunction.setMileage(Bukkit.getPlayer(args[2]), Double.parseDouble(args[3]));
                     return false;
                 }
             }
             if (args[0].equals("리로드")) {
                 Utils.reloadConfig();
-                p.sendMessage(prefix + "콘피그 파일을 리로드하였습니다.");
+                p.sendMessage(prefix + lang.get("reload_cmd_successful"));
                 return false;
             }
         }

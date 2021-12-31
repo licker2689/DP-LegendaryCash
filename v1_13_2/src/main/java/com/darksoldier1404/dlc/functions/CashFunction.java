@@ -1,6 +1,7 @@
 package com.darksoldier1404.dlc.functions;
 
 import com.darksoldier1404.dlc.LegendaryCash;
+import com.darksoldier1404.duc.lang.DLang;
 import com.darksoldier1404.duc.utils.NBT;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -14,6 +15,8 @@ import java.util.List;
 @SuppressWarnings("all")
 public class CashFunction {
     private static final LegendaryCash plugin = LegendaryCash.getInstance();
+    private static final String prefix = plugin.prefix;
+    private static final DLang lang = plugin.lang;
 
     public static boolean canUseCashCheck() {
         return plugin.config.getBoolean("Settings.useCashCheck");
@@ -41,6 +44,14 @@ public class CashFunction {
         return Material.getMaterial(plugin.config.getString("Settings.mileageCheckItem.ItemType"));
     }
 
+    public static int getCashCheckCMI() {
+        return plugin.config.getInt("Settings.cashCheckItem.CustomModelData");
+    }
+
+    public static int getMileageCheckCMI() {
+        return plugin.config.getInt("Settings.mileageCheckItem.CustomModelData");
+    }
+
     public static String getCashCheckDisplayName() {
         return plugin.config.getString("Settings.cashCheckItem.DisplayName");
     }
@@ -60,15 +71,15 @@ public class CashFunction {
     public static void getCashCheck(Player p, double cash, int amount) {
         if(isEnoughCash(p, cash*amount)){
             if(getMinCashCheck() > cash){
-                p.sendMessage(plugin.prefix + "수표로 뽑을 수 있는 최소 금액은 " + getMinCashCheck() + "캐시 입니다.");
+                p.sendMessage(prefix + lang.getWithArgs("check_cmd_cash_minimum_amount", String.valueOf(getMinCashCheck())));
                 return;
             }
             if(getCashCheckMaterial() == null){
-                p.sendMessage(plugin.prefix + "수표로 뽑을 수 있는 아이템이 설정되지 않았습니다.");
+                p.sendMessage(prefix + lang.get("check_cmd_check_item_is_not_set"));
                 return;
             }
             if (p.getInventory().firstEmpty() == -1) {
-                p.sendMessage(plugin.prefix + "§c인벤토리 공간이 부족합니다.");
+                p.sendMessage(prefix + lang.get("inventory_is_full"));
                 return;
             }
             ItemStack item = new ItemStack(getCashCheckMaterial());
@@ -83,25 +94,25 @@ public class CashFunction {
             item.setItemMeta(im);
             item = NBT.setDoubleTag(item, "CASH", cash);
             p.getInventory().addItem(item);
-            p.sendMessage(plugin.prefix + "수표로 " + amount + "개의 수표를 뽑았습니다.");
+            p.sendMessage(prefix + lang.getWithArgs("check_cmd_cash_successfully_printed", String.valueOf(amount)));
             takeCash(p, cash*amount);
         }else{
-            p.sendMessage(plugin.prefix + "§c캐시가 부족합니다.");
+            p.sendMessage(prefix + lang.get("not_enough_cash"));
         }
     }
 
     public static void getMileageCheck(Player p, double mileage, int amount) {
         if(isEnoughMileage(p, mileage*amount)) {
             if (getMinMileageCheck() > mileage) {
-                p.sendMessage(plugin.prefix + "마일리지로 뽑을 수 있는 최소 마일리지는 " + getMinMileageCheck() + "마일리지 입니다.");
+                p.sendMessage(prefix + lang.getWithArgs("check_cmd_mileage_minimum_amount", String.valueOf(getMinMileageCheck())));
                 return;
             }
             if (getMileageCheckMaterial() == null) {
-                p.sendMessage(plugin.prefix + "마일리지로 뽑을 수 있는 아이템이 설정되지 않았습니다.");
+                p.sendMessage(prefix + lang.get("check_cmd_check_item_is_not_set"));
                 return;
             }
             if (p.getInventory().firstEmpty() == -1) {
-                p.sendMessage(plugin.prefix + "§c인벤토리 공간이 부족합니다.");
+                p.sendMessage(prefix + lang.get("inventory_is_full"));
                 return;
             }
             ItemStack item = new ItemStack(getMileageCheckMaterial());
@@ -116,87 +127,87 @@ public class CashFunction {
             item.setItemMeta(im);
             item = NBT.setDoubleTag(item, "MILEAGE", mileage);
             p.getInventory().addItem(item);
-            p.sendMessage(plugin.prefix + "마일리지로 " + amount + "개의 수표를 뽑았습니다.");
+            p.sendMessage(prefix + lang.getWithArgs("check_cmd_mileage_successfully_printed", String.valueOf(amount)));
             takeMileage(p, mileage);
         }else{
-            p.sendMessage(plugin.prefix + "§c마일리지가 부족합니다.");
+            p.sendMessage(prefix + lang.get("not_enough_mileage"));
         }
     }
 
     public static double getCash(Player p) {
-        return plugin.udata.get(p.getUniqueId()).getInt("Player.CASH");
+        return plugin.ucash.get(p.getUniqueId());
     }
 
     public static double getMileage(Player p) {
-        return plugin.udata.get(p.getUniqueId()).getInt("Player.MILEAGE");
+        return plugin.umileage.get(p.getUniqueId());
     }
 
     public static void addCash(Player p, double amount) {
         if(amount < 0){
-            p.sendMessage(plugin.prefix + "§c음수는 입력이 불가능합니다.");
+            p.sendMessage(prefix + lang.get("value_is_negative"));
             return;
         }
         double cash = getCash(p);
         cash += amount;
-        plugin.udata.get(p.getUniqueId()).set("Player.CASH", cash);
+        plugin.ucash.put(p.getUniqueId(), cash);
     }
 
     public static void addMileage(Player p, double amount) {
         if(amount < 0){
-            p.sendMessage(plugin.prefix + "§c음수는 입력이 불가능합니다.");
+            p.sendMessage(prefix + lang.get("value_is_negative"));
             return;
         }
         double mileage = getMileage(p);
         mileage += amount;
-        plugin.udata.get(p.getUniqueId()).set("Player.MILEAGE", mileage);
+        plugin.umileage.put(p.getUniqueId(), mileage);
     }
 
     public static boolean takeCash(Player p, double amount) {
         if(amount < 0){
-            p.sendMessage(plugin.prefix + "§c음수는 입력이 불가능합니다.");
+            p.sendMessage(prefix + lang.get("value_is_negative"));
             return false;
         }
         double cash = getCash(p);
         if (cash - amount >= 0) {
             cash -= amount;
-            plugin.udata.get(p.getUniqueId()).set("Player.CASH", cash);
+            plugin.ucash.put(p.getUniqueId(), cash);
             return true;
         }else{
-            p.sendMessage(plugin.prefix + "캐시가 부족합니다.");
+            p.sendMessage(prefix + lang.get("not_enough_cash"));
             return false;
         }
     }
 
     public static boolean takeMileage(Player p, double amount) {
         if(amount < 0){
-            p.sendMessage(plugin.prefix + "§c음수는 입력이 불가능합니다.");
+            p.sendMessage(prefix + lang.get("value_is_negative"));
             return false;
         }
         double mileage = getMileage(p);
         if (mileage - amount >= 0) {
             mileage -= amount;
-            plugin.udata.get(p.getUniqueId()).set("Player.MILEAGE", mileage);
+            plugin.umileage.put(p.getUniqueId(), mileage);
             return true;
         }else{
-            p.sendMessage(plugin.prefix + "마일리지가 부족합니다.");
+            p.sendMessage(prefix + lang.get("not_enough_mileage"));
             return false;
         }
     }
 
     public static void setCash(Player p, double amount) {
         if(amount < 0){
-            p.sendMessage(plugin.prefix + "§c음수는 입력이 불가능합니다.");
+            p.sendMessage(prefix + lang.get("value_is_negative"));
             return;
         }
-        plugin.udata.get(p.getUniqueId()).set("Player.CASH", amount);
+        plugin.ucash.put(p.getUniqueId(), amount);
     }
 
     public static void setMileage(Player p, double amount) {
         if(amount < 0){
-            p.sendMessage(plugin.prefix + "§c음수는 입력이 불가능합니다.");
+            p.sendMessage(prefix + lang.get("value_is_negative"));
             return;
         }
-        plugin.udata.get(p.getUniqueId()).set("Player.MILEAGE", amount);
+        plugin.umileage.put(p.getUniqueId(), amount);
     }
 
     public static boolean isEnoughCash(Player p, double amount) {
@@ -211,44 +222,44 @@ public class CashFunction {
 
     public static void sendCash(Player sender, Player receiver, double amount) {
         if(sender.getUniqueId().equals(receiver.getUniqueId())){
-            sender.sendMessage(plugin.prefix + "자기 자신에게 송금할 수 없습니다.");
+            sender.sendMessage(prefix + lang.get("transfer_cmd_cant_send_to_me"));
             return;
         }
         if(amount <= 0){
-            sender.sendMessage(plugin.prefix + "송금할 금액이 0원 이하입니다.");
+            sender.sendMessage(prefix + lang.get("transfer_cmd_amount_too_small"));
             return;
         }
         if (isEnoughCash(sender, amount)) {
             addCash(receiver, amount);
             takeCash(sender, amount);
-            sender.sendMessage(plugin.prefix + amount + "캐시를 " + receiver.getName() + "에게 송금했습니다.");
+            sender.sendMessage(prefix + lang.getWithArgs("transfer_cmd_cash_successfully_transferred", String.valueOf(amount), receiver.getName()));
         }else{
-            sender.sendMessage(plugin.prefix + "캐시가 부족합니다.");
+            sender.sendMessage(prefix + lang.get("not_enough_cash"));
         }
     }
 
     public static void sendMileage(Player sender, Player receiver, double amount) {
         if(sender.getUniqueId().equals(receiver.getUniqueId())){
-            sender.sendMessage(plugin.prefix + "자기 자신에게 송금할 수 없습니다.");
+            sender.sendMessage(prefix + lang.get("transfer_cmd_cant_send_to_me"));
             return;
         }
         if (isEnoughMileage(sender, amount)) {
             addMileage(receiver, amount);
             takeMileage(sender, amount);
-            sender.sendMessage(plugin.prefix + amount + "마일리지를 " + receiver.getName() + "에게 송금했습니다.");
+            sender.sendMessage(prefix + lang.getWithArgs("transfer_cmd_mileage_successfully_transferred", String.valueOf(amount), receiver.getName()));
         }else{
-            sender.sendMessage(plugin.prefix + "마일리지가 부족합니다.");
+            sender.sendMessage(prefix + lang.get("not_enough_mileage"));
         }
     }
 
     public static void checkCash(Player p) {
         double cash = getCash(p);
-        p.sendMessage(plugin.prefix + "보유 캐시 : " + cash);
+        p.sendMessage(prefix + "보유 캐시 : " + cash);
     }
 
     public static void checkMileage(Player p) {
         double mileage = getMileage(p);
-        p.sendMessage(plugin.prefix + "보유 마일리지 : " + mileage);
+        p.sendMessage(prefix + "보유 마일리지 : " + mileage);
     }
 
     public static boolean isOpen(Player p) {

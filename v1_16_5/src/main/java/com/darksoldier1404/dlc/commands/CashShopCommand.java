@@ -4,6 +4,7 @@ import com.darksoldier1404.dlc.LegendaryCash;
 import com.darksoldier1404.dlc.functions.CashShopFunction;
 import com.darksoldier1404.dlc.utils.ShopConfigUtil;
 import com.darksoldier1404.dlc.utils.Utils;
+import com.darksoldier1404.duc.lang.DLang;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -17,7 +18,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class CashShopCommand implements CommandExecutor, TabCompleter {
-    private final String prefix = LegendaryCash.getInstance().prefix;
+    private final LegendaryCash plugin = LegendaryCash.getInstance();
+    private final String prefix = plugin.prefix;
+    private final DLang lang = plugin.lang;
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
@@ -27,22 +30,22 @@ public class CashShopCommand implements CommandExecutor, TabCompleter {
         }
         Player p = (Player) sender;
         if (args.length == 0) {
-            p.sendMessage(prefix + "/캐시상점 오픈 <상점이름> - 해당 캐시 상점을 오픈합니다.");
-            p.sendMessage(prefix + "/캐시상점 목록 - 모든 캐시 상점의 목록을 표시합니다.");
+            p.sendMessage(prefix + lang.get("shop_cmd_open"));
+            p.sendMessage(prefix + lang.get("shop_cmd_list"));
             if (p.isOp()) {
-                p.sendMessage(prefix + "/캐시상점 생성 <상점이름> - 캐시 상점을 생성합니다.");
-                p.sendMessage(prefix + "/캐시상점 진열 <상점이름> - 캐시 상점에 아이템을 진열하기 위한 창을 엽니다.");
-                p.sendMessage(prefix + "/캐시상점 가격 <상점이름> <C/M> <슬롯> <가격> - 해당 캐시상점의 해당 슬롯의 아이템의 가격을 설정합니다.");
-                p.sendMessage(prefix + "* 가격을 -1원으로 설정하면 구매 불가로 설정됩니다.");
-                p.sendMessage(prefix + "/캐시상점 삭제 <상점이름> - 캐시 상점을 삭제합니다.");
-                p.sendMessage(prefix + "/캐시상점 리로드/rl - 콘피그 파일과 상점 파일을 리로드 합니다.");
+                p.sendMessage(prefix + lang.get("shop_cmd_create"));
+                p.sendMessage(prefix + lang.get("shop_cmd_display"));
+                p.sendMessage(prefix + lang.get("shop_cmd_price"));
+                p.sendMessage(prefix + lang.get("shop_cmd_price_info"));
+                p.sendMessage(prefix + lang.get("shop_cmd_delete"));
+                p.sendMessage(prefix + lang.get("shop_cmd_reload"));
                 return false;
             }
         }
 
         if (args[0].equals("오픈")) {
             if (args.length == 1) {
-                p.sendMessage(prefix + "상점 이름을 입력해주세요!");
+                p.sendMessage(prefix + lang.get("shop_name_required"));
                 return false;
             }
             CashShopFunction.openShop(p, args[1]);
@@ -55,19 +58,19 @@ public class CashShopCommand implements CommandExecutor, TabCompleter {
         if (p.isOp()) {
             if (args[0].equals("생성")) {
                 if (args.length == 1) {
-                    p.sendMessage(prefix + "상점 이름을 입력해주세요!");
+                    p.sendMessage(prefix + lang.get("shop_name_required"));
                     return false;
                 }
                 if (ShopConfigUtil.createShop(args[1])) {
-                    p.sendMessage(prefix + args[1] + " 캐시상점이 생성되었습니다.");
+                    p.sendMessage(prefix + lang.getWithArgs("shop_create_successful", args[1]));
                 } else {
-                    p.sendMessage(prefix + args[1] + "캐시상점은 이미 존재합니다.");
+                    p.sendMessage(prefix + lang.get("shop_is_already_exists"));
                 }
                 return false;
             }
             if (args[0].equals("진열")) {
                 if (args.length == 1) {
-                    p.sendMessage(prefix + "상점 이름을 입력해주세요!");
+                    p.sendMessage(prefix + lang.get("shop_name_required"));
                     return false;
                 }
                 CashShopFunction.openShopShowCase(p, args[1]);
@@ -75,24 +78,24 @@ public class CashShopCommand implements CommandExecutor, TabCompleter {
             }
             if (args[0].equals("가격")) {
                 if (args.length == 1) {
-                    p.sendMessage(prefix + "상점 이름을 입력해주세요!");
+                    p.sendMessage(prefix + lang.get("shop_name_required"));
                     return false;
                 }
                 if (args.length == 2) {
-                    p.sendMessage(prefix + "설정할 가격 종류를 입력해주세요. C/M");
+                    p.sendMessage(prefix + lang.get("insert_type_of_fund"));
                     return false;
                 }
                 if (args.length == 3) {
-                    p.sendMessage(prefix + "슬롯의 번호를 입력해주세요. 0~53");
+                    p.sendMessage(prefix + lang.get("shop_create_slot_required"));
                     return false;
                 }
                 if (args.length == 4) {
-                    p.sendMessage(prefix + "설정할 가격을 입력해주세요.");
+                    p.sendMessage(prefix + lang.get("amount_required"));
                     return false;
                 }
                 //p.sendMessage(prefix + "/캐시상점 가격 <상점이름> <C/M> <슬롯> <가격> - 해당 캐시상점의 해당 슬롯의 아이템의 가격을 설정합니다.");
                 if (!LegendaryCash.getInstance().shops.containsKey(args[1])) {
-                    p.sendMessage(prefix + "존재하지 않는 캐시상점 입니다.");
+                    p.sendMessage(prefix + lang.get("shop_is_not_exists"));
                 } else {
                     if (args[2].equalsIgnoreCase("c")) {
                         try {
@@ -102,11 +105,11 @@ public class CashShopCommand implements CommandExecutor, TabCompleter {
                                 CashShopFunction.setShopCashPrice(p, slot, price, args[1]);
                                 return false;
                             } catch (Exception e) {
-                                p.sendMessage(prefix + "옳바른 가격을 입력해주세요.");
+                                p.sendMessage(prefix + lang.get("amount_is_not_number"));
                                 return false;
                             }
                         } catch (Exception e) {
-                            p.sendMessage(prefix + "옳바른 슬롯 번호를 입력해주세요.");
+                            p.sendMessage(prefix + lang.get("shop_slot_is_not_valid"));
                             return false;
                         }
                     }
@@ -118,34 +121,34 @@ public class CashShopCommand implements CommandExecutor, TabCompleter {
                                 CashShopFunction.setShopMileagePrice(p, slot, price, args[1]);
                                 return false;
                             } catch (Exception e) {
-                                p.sendMessage(prefix + "옳바른 가격을 입력해주세요.");
+                                p.sendMessage(prefix + lang.get("amount_is_not_number"));
                                 return false;
                             }
                         } catch (Exception e) {
-                            p.sendMessage(prefix + "옳바른 슬롯 번호를 입력해주세요.");
+                            p.sendMessage(prefix + lang.get("shop_slot_is_not_valid"));
                             return false;
                         }
                     }
-                    p.sendMessage(prefix + "가격 종류를 제대로 입력해주세요.");
+                    p.sendMessage(prefix + lang.get("type_of_fund_is_not_valid"));
                     return false;
                 }
             }
             if (args[0].equals("삭제")) {
                 if (args.length == 1) {
-                    p.sendMessage(prefix + "상점 이름을 입력해주세요!");
+                    p.sendMessage(prefix + lang.get("shop_name_required"));
                     return false;
                 }
                 if (ShopConfigUtil.deleteShop(args[1])) {
-                    p.sendMessage(prefix + args[1] + "캐시상점이 삭제되었습니다.");
+                    p.sendMessage(prefix + lang.getWithArgs("shop_delete_successful", args[1]));
                 } else {
-                    p.sendMessage(prefix + args[1] + "캐시상점은 존재하지 않습니다.");
+                    p.sendMessage(prefix + lang.get("shop_is_not_exists"));
                     return false;
                 }
             }
             if (args[0].equals("리로드") || args[0].equals("rl")) {
                 Utils.reloadConfig();
                 ShopConfigUtil.loadAllShop();
-                p.sendMessage(prefix + "콘피그 파일과 캐시상점 파일을 리로드 하였습니다.");
+                p.sendMessage(prefix + lang.get("reload_cmd_successful"));
                 return false;
             }
         }
