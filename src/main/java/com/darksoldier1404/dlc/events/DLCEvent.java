@@ -4,6 +4,7 @@ import com.darksoldier1404.dlc.LegendaryCash;
 import com.darksoldier1404.dlc.functions.CashFunction;
 import com.darksoldier1404.dlc.functions.CashShopFunction;
 import com.darksoldier1404.dlc.utils.Utils;
+import com.darksoldier1404.duc.api.inventory.DInventory;
 import com.darksoldier1404.duc.utils.NBT;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -17,8 +18,8 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.checkerframework.checker.units.qual.K;
 
 import java.util.HashMap;
 import java.util.UUID;
@@ -61,7 +62,7 @@ public class DLCEvent implements Listener {
     @EventHandler
     public void onInventoryClick(InventoryClickEvent e) {
         Player p = (Player) e.getWhoClicked();
-        if (e.getView().getTitle().contains("캐시상점 아이템 목록")) {
+        if(e.getClickedInventory() instanceof DInventory) {
             e.setCancelled(true);
             if (e.getClick() == ClickType.LEFT) {
                 CashShopFunction.buyWithCash(p, e.getCurrentItem());

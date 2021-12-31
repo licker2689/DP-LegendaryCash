@@ -2,6 +2,7 @@ package com.darksoldier1404.dlc.functions;
 
 import com.darksoldier1404.dlc.LegendaryCash;
 import com.darksoldier1404.dlc.utils.Utils;
+import com.darksoldier1404.duc.api.inventory.DInventory;
 import com.darksoldier1404.duc.lang.DLang;
 import com.darksoldier1404.duc.utils.NBT;
 import org.bukkit.Bukkit;
@@ -47,9 +48,10 @@ public class CashShopFunction {
 
     public static void openShopShowCase(Player p, String name) {
         plugin.currentEditShop.put(p.getUniqueId(), name);
-        Inventory inv = Bukkit.createInventory(null, 54, lang.getWithArgs("shop_display_gui_title", name));
+        Inventory inv = (Inventory) new DInventory(null, Bukkit.createInventory(null, 54, lang.getWithArgs("shop_display_gui_title", name)));
+
         YamlConfiguration shop = plugin.shops.get(name);
-        if(shop.getConfigurationSection("Shop.Items") != null) {
+        if (shop.getConfigurationSection("Shop.Items") != null) {
             for (String key : shop.getConfigurationSection("Shop.Items").getKeys(false)) {
                 inv.setItem(Integer.parseInt(key), shop.getItemStack("Shop.Items." + key));
             }
@@ -93,8 +95,8 @@ public class CashShopFunction {
     }
 
     public static void buyWithCash(Player p, ItemStack item) {
-        if(item == null) return;
-        if (NBT.getStringTag(item, "cash") == null || NBT.getStringTag(item, "cash").contains("-1")) {
+        if (item == null) return;
+        if (NBT.getDoubleTag(item, "cash") == 0 || NBT.getDoubleTag(item, "cash") == -1) {
             p.sendMessage(prefix + lang.get("shop_cant_buy_with_cash"));
             return;
         }
@@ -112,9 +114,9 @@ public class CashShopFunction {
         r = NBT.removeTag(r, "cash");
         r = NBT.removeTag(r, "mileage");
         ItemMeta im = r.getItemMeta();
-        List<String> lore =  im.getLore();
-        lore.remove(lore.size()-1);
-        lore.remove(lore.size()-1);
+        List<String> lore = im.getLore();
+        lore.remove(lore.size() - 1);
+        lore.remove(lore.size() - 1);
         im.setLore(lore);
         r.setItemMeta(im);
         p.getInventory().addItem(r);
@@ -122,8 +124,8 @@ public class CashShopFunction {
     }
 
     public static void buyWithMileage(Player p, ItemStack item) {
-        if(item == null) return;
-        if (NBT.getStringTag(item, "mileage") == null || NBT.getStringTag(item, "mileage").contains("-1")) {
+        if (item == null) return;
+        if (NBT.getDoubleTag(item, "mileage") == 0 || NBT.getDoubleTag(item, "mileage") == -1) {
             p.sendMessage(prefix + lang.get("shop_cant_buy_with_mileage"));
             return;
         }
@@ -141,9 +143,9 @@ public class CashShopFunction {
         r = NBT.removeTag(r, "cash");
         r = NBT.removeTag(r, "mileage");
         ItemMeta im = r.getItemMeta();
-        List<String> lore =  im.getLore();
-        lore.remove(lore.size()-1);
-        lore.remove(lore.size()-1);
+        List<String> lore = im.getLore();
+        lore.remove(lore.size() - 1);
+        lore.remove(lore.size() - 1);
         im.setLore(lore);
         r.setItemMeta(im);
         p.getInventory().addItem(r);
@@ -151,35 +153,35 @@ public class CashShopFunction {
     }
 
     public static void openShop(Player p, String name) {
-        if(!plugin.shops.containsKey(name)) {
+        if (!plugin.shops.containsKey(name)) {
             p.sendMessage(prefix + lang.get("shop_is_not_exists"));
             return;
         }
-        Inventory inv = Bukkit.createInventory(null, 54, lang.getWithArgs("shop_open_gui_title", name));
+        Inventory inv = (Inventory) new DInventory(null, Bukkit.createInventory(null, 54, lang.getWithArgs("shop_open_gui_title", name)));
         YamlConfiguration shop = plugin.shops.get(name);
-        if(shop.getConfigurationSection("Shop.Items") != null) {
+        if (shop.getConfigurationSection("Shop.Items") != null) {
             for (String key : shop.getConfigurationSection("Shop.Items").getKeys(false)) {
                 ItemStack item = shop.getItemStack("Shop.Items." + key);
                 ItemMeta im = item.getItemMeta();
                 List<String> lore = new ArrayList<>();
-                if(im.hasLore()) {
+                if (im.hasLore()) {
                     lore = im.getLore();
                 }
-                if(shop.getString("Shop.Prices." + key + ".cash") == null || shop.getInt("Shop.Prices." + key + ".cash") == -1) {
+                if (shop.getString("Shop.Prices." + key + ".cash") == null || shop.getInt("Shop.Prices." + key + ".cash") == -1) {
                     item = NBT.setDoubleTag(item, "cash", -1);
                     lore.add(lang.get("shop_item_lore_cant_buy_with_cash"));
-                }else{
+                } else {
                     double price = shop.getDouble("Shop.Prices." + key + ".cash");
                     item = NBT.setDoubleTag(item, "cash", price);
-                    lore.add(lang.get("shop_item_lore_can_buy_with_cash"));
+                    lore.add(lang.getWithArgs("shop_item_lore_can_buy_with_cash", String.valueOf(price)));
                 }
-                if(shop.getString("Shop.Prices." + key + ".mileage") == null || shop.getInt("Shop.Prices." + key + ".mileage") == -1) {
+                if (shop.getString("Shop.Prices." + key + ".mileage") == null || shop.getInt("Shop.Prices." + key + ".mileage") == -1) {
                     item = NBT.setDoubleTag(item, "mileage", -1);
                     lore.add(lang.get("shop_item_lore_cant_buy_with_mileage"));
-                }else{
+                } else {
                     double price = shop.getDouble("Shop.Prices." + key + ".mileage");
                     item = NBT.setDoubleTag(item, "mileage", price);
-                    lore.add(lang.get("shop_item_lore_can_buy_with_mileage"));
+                    lore.add(lang.getWithArgs("shop_item_lore_can_buy_with_mileage", String.valueOf(price)));
                 }
                 ItemStack r = item.clone();
                 ItemMeta rm = r.getItemMeta();
