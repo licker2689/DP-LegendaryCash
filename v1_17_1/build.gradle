@@ -9,7 +9,7 @@ tasks.withType(JavaCompile) {
 }
 
 group 'github.com/darksoldier1404'
-version = '1.0.1.69'
+version = '1.0.1.92'
 configurations {
     jar.archiveName = 'DP-LegendaryCash-_' + name + '-' + version + '.jar'
 }
