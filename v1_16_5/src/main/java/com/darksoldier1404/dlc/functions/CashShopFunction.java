@@ -48,7 +48,7 @@ public class CashShopFunction {
 
     public static void openShopShowCase(Player p, String name) {
         plugin.currentEditShop.put(p.getUniqueId(), name);
-        Inventory inv = (Inventory) new DInventory(null, Bukkit.createInventory(null, 54, lang.getWithArgs("shop_display_gui_title", name)));
+        Inventory inv = new DInventory(null, Bukkit.createInventory(null, 54, lang.getWithArgs("shop_display_gui_title", name)), plugin);
 
         YamlConfiguration shop = plugin.shops.get(name);
         if (shop.getConfigurationSection("Shop.Items") != null) {
@@ -157,7 +157,7 @@ public class CashShopFunction {
             p.sendMessage(prefix + lang.get("shop_is_not_exists"));
             return;
         }
-        Inventory inv = (Inventory) new DInventory(null, Bukkit.createInventory(null, 54, lang.getWithArgs("shop_open_gui_title", name)));
+        Inventory inv = new DInventory(null, Bukkit.createInventory(null, 54, lang.getWithArgs("shop_open_gui_title", name)), plugin);
         YamlConfiguration shop = plugin.shops.get(name);
         if (shop.getConfigurationSection("Shop.Items") != null) {
             for (String key : shop.getConfigurationSection("Shop.Items").getKeys(false)) {

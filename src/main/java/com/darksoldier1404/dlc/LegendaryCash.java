@@ -42,7 +42,7 @@ public class LegendaryCash extends JavaPlugin {
     public void onEnable() {
         plugin = this;
         Plugin pl = getServer().getPluginManager().getPlugin("DP-UniversalCore");
-        if(pl == null) {
+        if (pl == null) {
             getLogger().warning("DP-UniversalCore 플러그인이 설치되어있지 않습니다.");
             getLogger().warning("DP-LegendaryCash 플러그인을 비활성화 합니다.");
             plugin.setEnabled(false);
@@ -58,6 +58,8 @@ public class LegendaryCash extends JavaPlugin {
         getCommand("캐시상점").setExecutor(new CashShopCommand());
         dphm.register(new DPlaceHolder(plugin.getServer().getConsoleSender(), "cash", ucash, true), "cash");
         dphm.register(new DPlaceHolder(plugin.getServer().getConsoleSender(), "mileage", umileage, true), "mileage");
+        String r = lang.getWithArgs("cant_buy_storage_is_max", String.valueOf(10));
+
     }
 
     public void onDisable() {
