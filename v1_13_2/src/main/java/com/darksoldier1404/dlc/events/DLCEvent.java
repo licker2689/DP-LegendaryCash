@@ -70,6 +70,7 @@ public class DLCEvent implements Listener {
         Player p = (Player) e.getWhoClicked();
         if(e.getClickedInventory() == null) return;
         if(e.getClickedInventory() instanceof DInventory) {
+            if(plugin.currentEditShop.containsKey(e.getWhoClicked().getUniqueId())) return;
             DInventory di = (DInventory) e.getClickedInventory();
             if(di.isValidHandler(plugin)) {
                 e.setCancelled(true);
