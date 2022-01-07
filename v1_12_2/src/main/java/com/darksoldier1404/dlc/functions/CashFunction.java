@@ -86,6 +86,7 @@ public class CashFunction {
             item.setAmount(amount);
             ItemMeta im = item.getItemMeta();
             im.setDisplayName(ChatColor.translateAlternateColorCodes('&', getCashCheckDisplayName().replace("<cash>", String.valueOf(cash))));
+            im.setCustomModelData(getCashCheckCMI());
             List<String> lore = getCashCheckLore();
             for(int i = 0; i < lore.size(); i++){
                 lore.set(i, ChatColor.translateAlternateColorCodes('&', lore.get(i).replace("<cash>", String.valueOf(cash))));
@@ -119,6 +120,7 @@ public class CashFunction {
             item.setAmount(amount);
             ItemMeta im = item.getItemMeta();
             im.setDisplayName(ChatColor.translateAlternateColorCodes('&', getMileageCheckDisplayName().replace("<mileage>", String.valueOf(mileage))));
+            im.setCustomModelData(getMileageCheckCMI());
             List<String> lore = getMileageCheckLore();
             for(int i = 0; i < lore.size(); i++){
                 lore.set(i, ChatColor.translateAlternateColorCodes('&', lore.get(i).replace("<mileage>", String.valueOf(mileage))));
@@ -163,7 +165,7 @@ public class CashFunction {
     }
 
     public static boolean takeCash(Player p, double amount) {
-        if(amount < 0){
+        if(amount <= 0){
             p.sendMessage(prefix + lang.get("value_is_negative"));
             return false;
         }
@@ -179,7 +181,7 @@ public class CashFunction {
     }
 
     public static boolean takeMileage(Player p, double amount) {
-        if(amount < 0){
+        if(amount <= 0){
             p.sendMessage(prefix + lang.get("value_is_negative"));
             return false;
         }
