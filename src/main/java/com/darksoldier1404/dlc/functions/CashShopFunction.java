@@ -5,7 +5,6 @@ import com.darksoldier1404.dlc.utils.Utils;
 import com.darksoldier1404.duc.api.inventory.DInventory;
 import com.darksoldier1404.duc.lang.DLang;
 import com.darksoldier1404.duc.utils.NBT;
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -48,7 +47,7 @@ public class CashShopFunction {
 
     public static void openShopShowCase(Player p, String name) {
         plugin.currentEditShop.put(p.getUniqueId(), name);
-        Inventory inv = new DInventory(null, lang.getWithArgs("shop_display_gui_title", name), plugin);
+        Inventory inv = new DInventory(null, lang.getWithArgs("shop_display_gui_title", name), 54, plugin);
 
         YamlConfiguration shop = plugin.shops.get(name);
         if (shop.getConfigurationSection("Shop.Items") != null) {
@@ -157,7 +156,7 @@ public class CashShopFunction {
             p.sendMessage(prefix + lang.get("shop_is_not_exists"));
             return;
         }
-        Inventory inv = new DInventory(null, lang.getWithArgs("shop_open_gui_title", name), plugin);
+        Inventory inv = new DInventory(null, lang.getWithArgs("shop_open_gui_title", name), 54, plugin);
         YamlConfiguration shop = plugin.shops.get(name);
         if (shop.getConfigurationSection("Shop.Items") != null) {
             for (String key : shop.getConfigurationSection("Shop.Items").getKeys(false)) {
