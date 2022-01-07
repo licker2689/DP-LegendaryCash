@@ -165,7 +165,7 @@ public class CashFunction {
     }
 
     public static boolean takeCash(Player p, double amount) {
-        if(amount < 0){
+        if(amount <= 0){
             p.sendMessage(prefix + lang.get("value_is_negative"));
             return false;
         }
@@ -181,7 +181,7 @@ public class CashFunction {
     }
 
     public static boolean takeMileage(Player p, double amount) {
-        if(amount < 0){
+        if(amount <= 0){
             p.sendMessage(prefix + lang.get("value_is_negative"));
             return false;
         }
