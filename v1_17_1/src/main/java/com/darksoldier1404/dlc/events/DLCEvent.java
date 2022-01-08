@@ -56,10 +56,11 @@ public class DLCEvent implements Listener {
     public void onInventoryClose(InventoryCloseEvent e) {
         Player p = (Player) e.getPlayer();
         if(e.getInventory() instanceof DInventory) {
+            if(!plugin.currentEditShop.containsKey(p.getUniqueId())) return;
             DInventory di = (DInventory) e.getInventory();
             if(di.isValidHandler(plugin)) {
                 if (e.getView().getTitle().equals(lang.getWithArgs("shop_display_gui_title", plugin.currentEditShop.get(p.getUniqueId())))) {
-                    CashShopFunction.saveShopShowCase(p, e.getView().getTopInventory());
+                    CashShopFunction.saveShopShowCase(p, di);
                 }
             }
         }

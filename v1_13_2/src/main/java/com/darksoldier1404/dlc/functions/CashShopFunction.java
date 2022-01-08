@@ -63,9 +63,7 @@ public class CashShopFunction {
         String name = plugin.currentEditShop.get(p.getUniqueId());
         YamlConfiguration shop = plugin.shops.get(name);
         for (int i = 0; i < inv.getSize(); i++) {
-            if (inv.getItem(i) != null) {
                 shop.set("Shop.Items." + i, inv.getItem(i));
-            }
         }
         p.sendMessage(prefix + lang.getWithArgs("shop_display_gui_save_successful", name));
         Utils.saveData(name, "shops", shop);
