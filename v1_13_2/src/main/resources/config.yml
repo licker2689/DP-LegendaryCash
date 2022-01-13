@@ -3,7 +3,7 @@ Settings:
 
   # 언어 파일 | Language file
   # 경로 | Path: plugins/DP-LegendaryCash/lang/
-  lang: "Korean"
+  Lang: "Korean"
 
   # [ ---------- 수표 기능 ---------- ]
 
