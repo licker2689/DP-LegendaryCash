@@ -49,7 +49,7 @@ public class LegendaryCash extends JavaPlugin {
         core = (UniversalCore) pl;
         dphm = core.dphm;
         Utils.loadDefaultConfig();
-        Utils.loadDefaultLangFiles();
+        lang = new DLang(config.getString("Lang") == null ? "Korean" : config.getString("Lang"), plugin);
         ShopConfigUtil.loadAllShop();
         plugin.getServer().getPluginManager().registerEvents(new DLCEvent(), plugin);
         getCommand("캐시").setExecutor(new CashCommand());
