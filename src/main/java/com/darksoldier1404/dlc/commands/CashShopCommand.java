@@ -4,7 +4,7 @@ import com.darksoldier1404.dlc.LegendaryCash;
 import com.darksoldier1404.dlc.functions.CashShopFunction;
 import com.darksoldier1404.dlc.utils.Utils;
 import com.darksoldier1404.dlc.utils.ShopConfigUtil;
-import com.darksoldier1404.duc.lang.DLang;
+import com.darksoldier1404.dppc.lang.DLang;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;

@@ -17,25 +17,15 @@ build {
 }
 
 group 'github.com/darksoldier1404'
-version = '1.0.1.114'
+version = '1.0.1.119'
 configurations {
     jar.archiveName = 'DP-LegendaryCash-_' + name + '-' + version + '.jar'
 }
+jar{
+    destinationDirectory.set(file("$rootDir/jars"))
+}
 repositories {
     mavenCentral()
-    maven { url = 'https://oss.sonatype.org/content/repositories/central' }
-    maven { url = 'https://papermc.io/repo/repository/maven-snapshots/'}
-    maven { url "https://repo.dmulloy2.net/repository/public/" }
-    maven {
-        name "essentialsx-releases"
-        url "https://repo.essentialsx.net/releases/"
-    }
-    maven {
-        url "https://org.bstats/bstats-bukkit"
-    }
-    maven {
-        url 'https://repo.spring.io/plugins-release/'
-    }
     maven {
         url "http://dpnw.site:8081/repository/maven-public/"
         allowInsecureProtocol = true
@@ -46,10 +36,9 @@ dependencies {
     implementation 'org.jetbrains:annotations:22.0.0'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
-    compileOnly 'org.spigotmc:spigot:1.15.2-R0.1-SNAPSHOT'
-    compileOnly 'net.essentialsx:EssentialsX:2.19.0'
-    compileOnly "org.bstats:bstats-bukkit:2.2.1"
-    compileOnly 'com.darksoldier1404.duc:DP-UniversalCore:1.15.2-SNAPSHOT'
+    compileOnly 'org.bukkit.craftbukkit:craftbukkit:R0.1:1.15'
+    compileOnly 'org.spigotmc:spigot-api:R0.1:1.15'
+    compileOnly 'com.darksoldier1404.dppc:DPP-Core:1.15.2-SNAPSHOT'
 }
 
 test {

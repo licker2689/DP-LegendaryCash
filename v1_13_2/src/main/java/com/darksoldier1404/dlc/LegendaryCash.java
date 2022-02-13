@@ -5,10 +5,10 @@ import com.darksoldier1404.dlc.commands.CashShopCommand;
 import com.darksoldier1404.dlc.events.DLCEvent;
 import com.darksoldier1404.dlc.utils.ShopConfigUtil;
 import com.darksoldier1404.dlc.utils.Utils;
-import com.darksoldier1404.duc.UniversalCore;
-import com.darksoldier1404.duc.api.placeholder.DPHManager;
-import com.darksoldier1404.duc.api.placeholder.DPlaceHolder;
-import com.darksoldier1404.duc.lang.DLang;
+import com.darksoldier1404.dppc.DPPCore;
+import com.darksoldier1404.dppc.api.placeholder.DPHManager;
+import com.darksoldier1404.dppc.api.placeholder.DPlaceHolder;
+import com.darksoldier1404.dppc.lang.DLang;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -19,7 +19,7 @@ import java.util.UUID;
 
 @SuppressWarnings("all")
 public class LegendaryCash extends JavaPlugin {
-    private UniversalCore core;
+    private DPPCore core;
     private static LegendaryCash plugin;
     public String prefix;
     public YamlConfiguration config;
@@ -39,14 +39,14 @@ public class LegendaryCash extends JavaPlugin {
 
     public void onEnable() {
         plugin = this;
-        Plugin pl = getServer().getPluginManager().getPlugin("DP-UniversalCore");
+        Plugin pl = getServer().getPluginManager().getPlugin("DPP-Core");
         if(pl == null) {
-            getLogger().warning("DP-UniversalCore 플러그인이 설치되어있지 않습니다.");
+            getLogger().warning("DPP-Core 플러그인이 설치되어있지 않습니다.");
             getLogger().warning("DP-LegendaryCash 플러그인을 비활성화 합니다.");
             plugin.setEnabled(false);
             return;
         }
-        core = (UniversalCore) pl;
+        core = (DPPCore) pl;
         dphm = core.dphm;
         Utils.loadDefaultConfig();
         lang = new DLang(config.getString("Lang") == null ? "Korean" : config.getString("Lang"), plugin);

@@ -1,8 +1,8 @@
 package com.darksoldier1404.dlc.functions;
 
 import com.darksoldier1404.dlc.LegendaryCash;
-import com.darksoldier1404.duc.lang.DLang;
-import com.darksoldier1404.duc.utils.NBT;
+import com.darksoldier1404.dppc.lang.DLang;
+import com.darksoldier1404.dppc.utils.NBT;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;

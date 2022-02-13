@@ -1,9 +1,9 @@
 package com.darksoldier1404.dlc.utils;
 
 import com.darksoldier1404.dlc.LegendaryCash;
-import com.darksoldier1404.duc.api.placeholder.DPlaceHolder;
-import com.darksoldier1404.duc.lang.DLang;
-import com.darksoldier1404.duc.utils.ConfigUtils;
+import com.darksoldier1404.dppc.api.placeholder.DPlaceHolder;
+import com.darksoldier1404.dppc.lang.DLang;
+import com.darksoldier1404.dppc.utils.ConfigUtils;
 import com.google.common.collect.Lists;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;

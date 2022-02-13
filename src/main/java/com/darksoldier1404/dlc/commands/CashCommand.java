@@ -3,7 +3,7 @@ package com.darksoldier1404.dlc.commands;
 import com.darksoldier1404.dlc.LegendaryCash;
 import com.darksoldier1404.dlc.functions.CashFunction;
 import com.darksoldier1404.dlc.utils.Utils;
-import com.darksoldier1404.duc.lang.DLang;
+import com.darksoldier1404.dppc.lang.DLang;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
