@@ -4,9 +4,9 @@ import com.darksoldier1404.dlc.LegendaryCash;
 import com.darksoldier1404.dlc.functions.CashFunction;
 import com.darksoldier1404.dlc.functions.CashShopFunction;
 import com.darksoldier1404.dlc.utils.Utils;
-import com.darksoldier1404.duc.api.inventory.DInventory;
-import com.darksoldier1404.duc.lang.DLang;
-import com.darksoldier1404.duc.utils.NBT;
+import com.darksoldier1404.dppc.api.inventory.DInventory;
+import com.darksoldier1404.dppc.lang.DLang;
+import com.darksoldier1404.dppc.utils.NBT;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -69,10 +69,10 @@ public class DLCEvent implements Listener {
     @EventHandler
     public void onInventoryClick(InventoryClickEvent e) {
         Player p = (Player) e.getWhoClicked();
-        if(e.getClickedInventory() == null) return;
-        if(e.getClickedInventory() instanceof DInventory) {
+        if(e.getInventory() == null) return;
+        if(e.getInventory() instanceof DInventory) {
             if(plugin.currentEditShop.containsKey(e.getWhoClicked().getUniqueId())) return;
-            DInventory di = (DInventory) e.getClickedInventory();
+            DInventory di = (DInventory) e.getInventory();
             if(di.isValidHandler(plugin)) {
                 e.setCancelled(true);
                 if (e.getClick() == ClickType.LEFT) {

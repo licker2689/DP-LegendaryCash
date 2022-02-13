@@ -4,9 +4,9 @@ import com.darksoldier1404.dlc.LegendaryCash;
 import com.darksoldier1404.dlc.functions.CashFunction;
 import com.darksoldier1404.dlc.functions.CashShopFunction;
 import com.darksoldier1404.dlc.utils.Utils;
-import com.darksoldier1404.duc.api.inventory.DInventory;
-import com.darksoldier1404.duc.lang.DLang;
-import com.darksoldier1404.duc.utils.NBT;
+import com.darksoldier1404.dppc.api.inventory.DInventory;
+import com.darksoldier1404.dppc.lang.DLang;
+import com.darksoldier1404.dppc.utils.NBT;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -19,6 +19,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.HashMap;
@@ -60,7 +61,7 @@ public class DLCEvent implements Listener {
             DInventory di = (DInventory) e.getInventory();
             if(di.isValidHandler(plugin)) {
                 if (e.getView().getTitle().equals(lang.getWithArgs("shop_display_gui_title", plugin.currentEditShop.get(p.getUniqueId())))) {
-                    CashShopFunction.saveShopShowCase(p, di);
+                    CashShopFunction.saveShopShowCase(p, (Inventory) di);
                 }
             }
         }

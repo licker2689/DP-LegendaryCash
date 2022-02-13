@@ -2,9 +2,9 @@ package com.darksoldier1404.dlc.functions;
 
 import com.darksoldier1404.dlc.LegendaryCash;
 import com.darksoldier1404.dlc.utils.Utils;
-import com.darksoldier1404.duc.api.inventory.DInventory;
-import com.darksoldier1404.duc.lang.DLang;
-import com.darksoldier1404.duc.utils.NBT;
+import com.darksoldier1404.dppc.api.inventory.DInventory;
+import com.darksoldier1404.dppc.lang.DLang;
+import com.darksoldier1404.dppc.utils.NBT;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -28,8 +28,8 @@ public class CashShopFunction {
     }
 
     public static ItemStack removeDLCNBT(ItemStack item) {
-        item = NBT.removeTag(item, "cash");
-        item = NBT.removeTag(item, "mileage");
+        item = NBT.c(item, "cash");
+        item = NBT.c(item, "mileage");
         return item;
     }
 
@@ -109,8 +109,8 @@ public class CashShopFunction {
         }
         CashFunction.takeCash(p, cash);
         ItemStack r = item.clone();
-        r = NBT.removeTag(r, "cash");
-        r = NBT.removeTag(r, "mileage");
+        r = NBT.c(r, "cash");
+        r = NBT.c(r, "mileage");
         ItemMeta im = r.getItemMeta();
         List<String> lore = im.getLore();
         lore.remove(lore.size() - 1);
@@ -138,8 +138,8 @@ public class CashShopFunction {
         }
         CashFunction.takeMileage(p, mileage);
         ItemStack r = item.clone();
-        r = NBT.removeTag(r, "cash");
-        r = NBT.removeTag(r, "mileage");
+        r = NBT.c(r, "cash");
+        r = NBT.c(r, "mileage");
         ItemMeta im = r.getItemMeta();
         List<String> lore = im.getLore();
         lore.remove(lore.size() - 1);
