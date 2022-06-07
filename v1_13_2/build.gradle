@@ -27,7 +27,7 @@ jar{
 repositories {
     mavenCentral()
     maven {
-        url "http://dpnw.site:8081/repository/maven-public/"
+        url "http://dpp.dpnw.site:8081/repository/maven-public/"
         allowInsecureProtocol = true
     }
 }
@@ -36,8 +36,8 @@ dependencies {
     implementation 'org.jetbrains:annotations:22.0.0'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
-    compileOnly 'org.bukkit.craftbukkit:craftbukkit:R0.1:1.13'
-    compileOnly 'org.spigotmc:spigot-api:R0.1:1.13'
+    compileOnly 'org.bukkit.craftbukkit:craftbukkit:R0.1:1.13.2'
+    compileOnly 'org.spigotmc:spigot-api:R0.1:1.13.2'
     compileOnly 'com.darksoldier1404.dppc:DPP-Core:1.13.2-SNAPSHOT'
 }
 
