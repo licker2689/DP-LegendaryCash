@@ -39,8 +39,8 @@ public class CashShopCommand implements CommandExecutor, TabCompleter {
                 p.sendMessage(prefix + lang.get("shop_cmd_price_info"));
                 p.sendMessage(prefix + lang.get("shop_cmd_delete"));
                 p.sendMessage(prefix + lang.get("shop_cmd_reload"));
-                return false;
             }
+            return false;
         }
 
         if (args[0].equals("오픈")) {
