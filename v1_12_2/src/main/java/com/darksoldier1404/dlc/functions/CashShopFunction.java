@@ -7,18 +7,17 @@ import com.darksoldier1404.dppc.lang.DLang;
 import com.darksoldier1404.dppc.utils.NBT;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @SuppressWarnings("all")
 public class CashShopFunction {
     private static final LegendaryCash plugin = LegendaryCash.getInstance();
     private static final String prefix = plugin.prefix;
     private static final DLang lang = plugin.lang;
+    public static final Map<UUID, DInventory> currentInv = new HashMap<>();
 
     public static ItemStack addDLCNBT(ItemStack item, double cash, double mileage) {
         item = NBT.setDoubleTag(item, "cash", cash);
@@ -47,22 +46,23 @@ public class CashShopFunction {
 
     public static void openShopShowCase(Player p, String name) {
         plugin.currentEditShop.put(p.getUniqueId(), name);
-        Inventory inv = new DInventory(null, lang.getWithArgs("shop_display_gui_title", name), 54, plugin);
+        DInventory dinv = new DInventory(null, lang.getWithArgs("shop_display_gui_title", name), 54, plugin);
 
         YamlConfiguration shop = plugin.shops.get(name);
         if (shop.getConfigurationSection("Shop.Items") != null) {
             for (String key : shop.getConfigurationSection("Shop.Items").getKeys(false)) {
-                inv.setItem(Integer.parseInt(key), shop.getItemStack("Shop.Items." + key));
+                dinv.setItem(Integer.parseInt(key), shop.getItemStack("Shop.Items." + key));
             }
         }
-        p.openInventory(inv);
+        p.openInventory(dinv);
+        currentInv.put(p.getUniqueId(), dinv);
     }
 
-    public static void saveShopShowCase(Player p, Inventory inv) {
+    public static void saveShopShowCase(Player p, DInventory dinv) {
         String name = plugin.currentEditShop.get(p.getUniqueId());
         YamlConfiguration shop = plugin.shops.get(name);
-        for (int i = 0; i < inv.getSize(); i++) {
-                shop.set("Shop.Items." + i, inv.getItem(i));
+        for (int i = 0; i < dinv.getSize(); i++) {
+            shop.set("Shop.Items." + i, dinv.getItem(i));
         }
         p.sendMessage(prefix + lang.getWithArgs("shop_display_gui_save_successful", name));
         Utils.saveData(name, "shops", shop);
@@ -154,7 +154,7 @@ public class CashShopFunction {
             p.sendMessage(prefix + lang.get("shop_is_not_exists"));
             return;
         }
-        Inventory inv = new DInventory(null, lang.getWithArgs("shop_open_gui_title", name), 54, plugin);
+        DInventory dinv = new DInventory(null, lang.getWithArgs("shop_open_gui_title", name), 54, plugin);
         YamlConfiguration shop = plugin.shops.get(name);
         if (shop.getConfigurationSection("Shop.Items") != null) {
             for (String key : shop.getConfigurationSection("Shop.Items").getKeys(false)) {
@@ -184,9 +184,10 @@ public class CashShopFunction {
                 ItemMeta rm = r.getItemMeta();
                 rm.setLore(lore);
                 r.setItemMeta(rm);
-                inv.setItem(Integer.parseInt(key), r);
+                dinv.setItem(Integer.parseInt(key), r);
             }
         }
-        p.openInventory(inv);
+        p.openInventory(dinv);
+        currentInv.put(p.getUniqueId(), dinv);
     }
 }

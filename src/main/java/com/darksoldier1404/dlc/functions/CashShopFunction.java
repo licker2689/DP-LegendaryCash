@@ -11,14 +11,15 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @SuppressWarnings("all")
 public class CashShopFunction {
     private static final LegendaryCash plugin = LegendaryCash.getInstance();
     private static final String prefix = plugin.prefix;
     private static final DLang lang = plugin.lang;
+
+    public static final Set<UUID> view = new HashSet<>();
 
     public static ItemStack addDLCNBT(ItemStack item, double cash, double mileage) {
         item = NBT.setDoubleTag(item, "cash", cash);
@@ -56,6 +57,7 @@ public class CashShopFunction {
             }
         }
         p.openInventory(inv);
+        view.add(p.getUniqueId());
     }
 
     public static void saveShopShowCase(Player p, Inventory inv) {
@@ -188,5 +190,6 @@ public class CashShopFunction {
             }
         }
         p.openInventory(inv);
+        view.add(p.getUniqueId());
     }
 }
