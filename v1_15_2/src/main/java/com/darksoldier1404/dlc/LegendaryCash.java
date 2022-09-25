@@ -3,12 +3,14 @@ package com.darksoldier1404.dlc;
 import com.darksoldier1404.dlc.commands.CashCommand;
 import com.darksoldier1404.dlc.commands.CashShopCommand;
 import com.darksoldier1404.dlc.events.DLCEvent;
+import com.darksoldier1404.dlc.functions.CurrencyType;
 import com.darksoldier1404.dlc.utils.ShopConfigUtil;
 import com.darksoldier1404.dlc.utils.Utils;
 import com.darksoldier1404.dppc.DPPCore;
 import com.darksoldier1404.dppc.api.placeholder.DPHManager;
 import com.darksoldier1404.dppc.api.placeholder.DPlaceHolder;
 import com.darksoldier1404.dppc.lang.DLang;
+import com.darksoldier1404.dppc.utils.Triple;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -28,6 +30,7 @@ public class LegendaryCash extends JavaPlugin {
     public final Map<UUID, Double> umileage = new HashMap<>();
     public final Map<String, YamlConfiguration> shops = new HashMap<>();
     public final Map<UUID, String> currentEditShop = new HashMap<>();
+    public final Map<UUID, Triple<String, Integer, CurrencyType>> currentEditShopItem = new HashMap<>();
     public Map<String, YamlConfiguration> langFiles = new HashMap<>();
     public DLang lang;
     public DPHManager dphm;
@@ -40,7 +43,7 @@ public class LegendaryCash extends JavaPlugin {
     public void onEnable() {
         plugin = this;
         Plugin pl = getServer().getPluginManager().getPlugin("DPP-Core");
-        if(pl == null) {
+        if (pl == null) {
             getLogger().warning("DPP-Core 플러그인이 설치되어있지 않습니다.");
             getLogger().warning("DP-LegendaryCash 플러그인을 비활성화 합니다.");
             plugin.setEnabled(false);
@@ -56,6 +59,8 @@ public class LegendaryCash extends JavaPlugin {
         getCommand("캐시상점").setExecutor(new CashShopCommand());
         dphm.register(new DPlaceHolder(plugin.getServer().getConsoleSender(), "cash", ucash, true), "cash");
         dphm.register(new DPlaceHolder(plugin.getServer().getConsoleSender(), "mileage", umileage, true), "mileage");
+        String r = lang.getWithArgs("cant_buy_storage_is_max", String.valueOf(10));
+
     }
 
     public void onDisable() {
