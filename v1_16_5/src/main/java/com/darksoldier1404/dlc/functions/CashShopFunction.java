@@ -5,7 +5,7 @@ import com.darksoldier1404.dlc.utils.Utils;
 import com.darksoldier1404.dppc.api.inventory.DInventory;
 import com.darksoldier1404.dppc.lang.DLang;
 import com.darksoldier1404.dppc.utils.NBT;
-import org.bukkit.Bukkit;
+import com.darksoldier1404.dppc.utils.Triple;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -48,12 +48,51 @@ public class CashShopFunction {
 
     public static void openShopShowCase(Player p, String name) {
         plugin.currentEditShop.put(p.getUniqueId(), name);
-        Inventory inv = new DInventory(null, lang.getWithArgs("shop_display_gui_title", name), 54, plugin);
+        Inventory inv = (Inventory) new DInventory(null, lang.getWithArgs("shop_display_gui_title", name), 54, plugin);
 
         YamlConfiguration shop = plugin.shops.get(name);
         if (shop.getConfigurationSection("Shop.Items") != null) {
             for (String key : shop.getConfigurationSection("Shop.Items").getKeys(false)) {
                 inv.setItem(Integer.parseInt(key), shop.getItemStack("Shop.Items." + key));
+            }
+        }
+        p.openInventory(inv);
+    }
+
+    public static void openShopPriceSetting(Player p, String name) {
+        plugin.currentEditShop.put(p.getUniqueId(), name);
+        DInventory inv = new DInventory(null, lang.getWithArgs("shop_display_gui_title", name), 54, plugin);
+        inv.setObj("priceSetting");
+        YamlConfiguration shop = plugin.shops.get(name);
+        if (shop.getConfigurationSection("Shop.Items") != null) {
+            for (String key : shop.getConfigurationSection("Shop.Items").getKeys(false)) {
+                ItemStack item = shop.getItemStack("Shop.Items." + key);
+                ItemMeta im = item.getItemMeta();
+                List<String> lore = new ArrayList<>();
+                if (im.hasLore()) {
+                    lore = im.getLore();
+                }
+                if (shop.getString("Shop.Prices." + key + ".cash") == null || shop.getInt("Shop.Prices." + key + ".cash") == -1) {
+                    item = NBT.setDoubleTag(item, "cash", -1);
+                    lore.add(lang.get("shop_item_lore_cant_buy_with_cash"));
+                } else {
+                    double price = shop.getDouble("Shop.Prices." + key + ".cash");
+                    item = NBT.setDoubleTag(item, "cash", price);
+                    lore.add(lang.getWithArgs("shop_item_lore_can_buy_with_cash", String.valueOf(price)));
+                }
+                if (shop.getString("Shop.Prices." + key + ".mileage") == null || shop.getInt("Shop.Prices." + key + ".mileage") == -1) {
+                    item = NBT.setDoubleTag(item, "mileage", -1);
+                    lore.add(lang.get("shop_item_lore_cant_buy_with_mileage"));
+                } else {
+                    double price = shop.getDouble("Shop.Prices." + key + ".mileage");
+                    item = NBT.setDoubleTag(item, "mileage", price);
+                    lore.add(lang.getWithArgs("shop_item_lore_can_buy_with_mileage", String.valueOf(price)));
+                }
+                ItemStack r = item.clone();
+                ItemMeta rm = r.getItemMeta();
+                rm.setLore(lore);
+                r.setItemMeta(rm);
+                inv.setItem(Integer.parseInt(key), r);
             }
         }
         p.openInventory(inv);
@@ -68,6 +107,16 @@ public class CashShopFunction {
         p.sendMessage(prefix + lang.getWithArgs("shop_display_gui_save_successful", name));
         Utils.saveData(name, "shops", shop);
         plugin.currentEditShop.remove(p.getUniqueId());
+    }
+
+    public static void setCashPriceWithChat(Player p, int slot) {
+        p.closeInventory();
+        plugin.currentEditShopItem.put(p.getUniqueId(), Triple.of(plugin.currentEditShop.get(p.getUniqueId()), slot, CurrencyType.CASH));
+    }
+
+    public static void setMileagePriceWithChat(Player p, int slot) {
+        p.closeInventory();
+        plugin.currentEditShopItem.put(p.getUniqueId(), Triple.of(plugin.currentEditShop.get(p.getUniqueId()), slot, CurrencyType.MILEAGE));
     }
 
     public static void setShopCashPrice(Player p, int slot, double cash, String name) {
@@ -155,7 +204,7 @@ public class CashShopFunction {
             p.sendMessage(prefix + lang.get("shop_is_not_exists"));
             return;
         }
-        Inventory inv = new DInventory(null, lang.getWithArgs("shop_open_gui_title", name), 54, plugin);
+        Inventory inv = (Inventory) new DInventory(null, lang.getWithArgs("shop_open_gui_title", name), 54, plugin);
         YamlConfiguration shop = plugin.shops.get(name);
         if (shop.getConfigurationSection("Shop.Items") != null) {
             for (String key : shop.getConfigurationSection("Shop.Items").getKeys(false)) {
@@ -191,3 +240,4 @@ public class CashShopFunction {
         p.openInventory(inv);
     }
 }
+

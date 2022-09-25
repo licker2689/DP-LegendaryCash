@@ -1,11 +1,8 @@
 package com.darksoldier1404.dlc.utils;
 
 import com.darksoldier1404.dlc.LegendaryCash;
-import com.darksoldier1404.dppc.api.placeholder.DPlaceHolder;
-import com.darksoldier1404.dppc.lang.DLang;
 import com.darksoldier1404.dppc.utils.ConfigUtils;
 import com.google.common.collect.Lists;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.Nullable;
@@ -105,6 +102,7 @@ public class Utils {
     public static void loadDefaultConfig() {
         plugin.config = ConfigUtils.loadDefaultPluginConfig(plugin);
         plugin.prefix = ChatColor.translateAlternateColorCodes('&', plugin.config.getString("Settings.prefix"));
+
     }
 
 }
