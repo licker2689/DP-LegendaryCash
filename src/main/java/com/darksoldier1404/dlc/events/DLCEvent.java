@@ -3,6 +3,7 @@ package com.darksoldier1404.dlc.events;
 import com.darksoldier1404.dlc.LegendaryCash;
 import com.darksoldier1404.dlc.functions.CashFunction;
 import com.darksoldier1404.dlc.functions.CashShopFunction;
+import com.darksoldier1404.dlc.functions.CurrencyType;
 import com.darksoldier1404.dlc.utils.Utils;
 import com.darksoldier1404.dppc.api.inventory.DInventory;
 import com.darksoldier1404.dppc.lang.DLang;
@@ -45,6 +46,31 @@ public class DLCEvent implements Listener {
     @EventHandler
     public void onChat(PlayerChatEvent e) {
         String msg = e.getMessage();
+        Player p = e.getPlayer();
+        if (plugin.currentEditShopItem.containsKey(p.getUniqueId())) {
+            e.setCancelled(true);
+            String name = plugin.currentEditShopItem.get(p.getUniqueId()).getA();
+            int slot = plugin.currentEditShopItem.get(p.getUniqueId()).getB();
+            CurrencyType type = plugin.currentEditShopItem.get(p.getUniqueId()).getC();
+            try {
+                double price = Double.parseDouble(msg);
+                if (type == CurrencyType.CASH) {
+                    CashShopFunction.setShopCashPrice(p, slot, price, name);
+                } else {
+                    CashShopFunction.setShopMileagePrice(p, slot, price, name);
+                }
+                plugin.currentEditShopItem.remove(p.getUniqueId());
+                plugin.currentEditShop.remove(p.getUniqueId());
+                CashShopFunction.openShopPriceSetting(p, name);
+                return;
+            } catch (Exception ex) {
+                p.sendMessage(plugin.prefix + lang.get("amount_required"));
+                plugin.currentEditShopItem.remove(p.getUniqueId());
+                plugin.currentEditShop.remove(p.getUniqueId());
+                CashShopFunction.openShopPriceSetting(p, name);
+                return;
+            }
+        }
         if (msg.contains("{cash}")) {
             e.setMessage(e.getMessage().replace("{cash}", ((HashMap<UUID, Double>) plugin.dphm.getPlaceholder("cash").getValue()).get(e.getPlayer().getUniqueId()) + ""));
         }
@@ -56,9 +82,10 @@ public class DLCEvent implements Listener {
     @EventHandler
     public void onInventoryClose(InventoryCloseEvent e) {
         Player p = (Player) e.getPlayer();
-        if(e.getInventory() instanceof DInventory) {
+        if (e.getInventory() instanceof DInventory) {
             if (!plugin.currentEditShop.containsKey(p.getUniqueId())) return;
             DInventory di = (DInventory) e.getInventory();
+            if(di.getObj() != null) return;
             if (di.isValidHandler(plugin)) {
                 if (e.getView().getTitle().equals(lang.getWithArgs("shop_display_gui_title", plugin.currentEditShop.get(p.getUniqueId())))) {
                     CashShopFunction.saveShopShowCase(p, (Inventory) di);
@@ -72,10 +99,22 @@ public class DLCEvent implements Listener {
         Player p = (Player) e.getWhoClicked();
         if (e.getClickedInventory() == null) return;
         if (e.getClickedInventory() instanceof DInventory) {
-            if (plugin.currentEditShop.containsKey(e.getWhoClicked().getUniqueId())) return;
             DInventory di = (DInventory) e.getClickedInventory();
             if (di.isValidHandler(plugin)) {
                 e.setCancelled(true);
+                if (di.getObj() != null) {
+                    if (di.getObj().equals("priceSetting")) {
+                        if (e.getClick() == ClickType.LEFT) {
+                            CashShopFunction.setCashPriceWithChat(p, e.getSlot());
+                            return;
+                        }
+                        if (e.getClick() == ClickType.RIGHT) {
+                            CashShopFunction.setMileagePriceWithChat(p, e.getSlot());
+                        }
+                        return;
+                    }
+                }
+                if (plugin.currentEditShop.containsKey(e.getWhoClicked().getUniqueId())) return;
                 if (e.getClick() == ClickType.LEFT) {
                     CashShopFunction.buyWithCash(p, e.getCurrentItem());
                     return;

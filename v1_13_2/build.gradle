@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id 'maven-publish'
 }
 
 java {
@@ -17,10 +18,28 @@ build {
 }
 
 group 'github.com/darksoldier1404'
-version = '1.0.1.120'
+version = '1.0.2.122'
 configurations {
     jar.archiveName = 'DP-LegendaryCash-_' + name + '-' + version + '.jar'
 }
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            groupId = 'com.darksoldier1404.dlc'
+            artifactId = 'DP-LegendaryCash'
+            version = '1.13-' + version
+            artifact "$rootDir/jars/"+ jar.archiveName
+        }
+    }
+    repositories {
+        maven {
+            url "http://dpp.dpnw.site:8081/repository/dpp-releases/"
+            allowInsecureProtocol = true
+        }
+    }
+}
+
 jar{
     destinationDirectory.set(file("$rootDir/jars"))
 }

@@ -15,6 +15,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class CashShopCommand implements CommandExecutor, TabCompleter {
     private final LegendaryCash plugin = LegendaryCash.getInstance();
@@ -23,10 +24,11 @@ public class CashShopCommand implements CommandExecutor, TabCompleter {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        if (!(sender instanceof Player p)) {
+        if (!(sender instanceof Player)) {
             sender.sendMessage(prefix + "§c플레이어만 사용 가능한 명령어 입니다.");
             return false;
         }
+        Player p = (Player) sender;
         if (args.length == 0) {
             p.sendMessage(prefix + lang.get("shop_cmd_open"));
             p.sendMessage(prefix + lang.get("shop_cmd_list"));
@@ -50,6 +52,10 @@ public class CashShopCommand implements CommandExecutor, TabCompleter {
             return false;
         }
         if (args[0].equals("목록")) {
+            if (LegendaryCash.getInstance().shops.isEmpty()) {
+                p.sendMessage(prefix + lang.get("상점이 존재하지 않습니다."));
+                return false;
+            }
             LegendaryCash.getInstance().shops.keySet().forEach(s -> p.sendMessage(prefix + s));
             return false;
         }
@@ -71,6 +77,10 @@ public class CashShopCommand implements CommandExecutor, TabCompleter {
                     p.sendMessage(prefix + lang.get("shop_name_required"));
                     return false;
                 }
+                if (!LegendaryCash.getInstance().shops.containsKey(args[1])) {
+                    p.sendMessage(prefix + lang.get("shop_is_not_exists"));
+                    return false;
+                }
                 CashShopFunction.openShopShowCase(p, args[1]);
                 return false;
             }
@@ -79,55 +89,11 @@ public class CashShopCommand implements CommandExecutor, TabCompleter {
                     p.sendMessage(prefix + lang.get("shop_name_required"));
                     return false;
                 }
-                if (args.length == 2) {
-                    p.sendMessage(prefix + lang.get("insert_type_of_fund"));
-                    return false;
-                }
-                if (args.length == 3) {
-                    p.sendMessage(prefix + lang.get("shop_create_slot_required"));
-                    return false;
-                }
-                if (args.length == 4) {
-                    p.sendMessage(prefix + lang.get("amount_required"));
-                    return false;
-                }
-                //p.sendMessage(prefix + "/캐시상점 가격 <상점이름> <C/M> <슬롯> <가격> - 해당 캐시상점의 해당 슬롯의 아이템의 가격을 설정합니다.");
+                //p.sendMessage(prefix + "/캐시상점 가격 <상점이름>");
                 if (!LegendaryCash.getInstance().shops.containsKey(args[1])) {
                     p.sendMessage(prefix + lang.get("shop_is_not_exists"));
                 } else {
-                    if (args[2].equalsIgnoreCase("c")) {
-                        try {
-                            int slot = Integer.parseInt(args[3]);
-                            try {
-                                double price = Double.parseDouble(args[4]);
-                                CashShopFunction.setShopCashPrice(p, slot, price, args[1]);
-                                return false;
-                            } catch (Exception e) {
-                                p.sendMessage(prefix + lang.get("amount_is_not_number"));
-                                return false;
-                            }
-                        } catch (Exception e) {
-                            p.sendMessage(prefix + lang.get("shop_slot_is_not_valid"));
-                            return false;
-                        }
-                    }
-                    if (args[2].equalsIgnoreCase("m")) {
-                        try {
-                            int slot = Integer.parseInt(args[3]);
-                            try {
-                                double price = Double.parseDouble(args[4]);
-                                CashShopFunction.setShopMileagePrice(p, slot, price, args[1]);
-                                return false;
-                            } catch (Exception e) {
-                                p.sendMessage(prefix + lang.get("amount_is_not_number"));
-                                return false;
-                            }
-                        } catch (Exception e) {
-                            p.sendMessage(prefix + lang.get("shop_slot_is_not_valid"));
-                            return false;
-                        }
-                    }
-                    p.sendMessage(prefix + lang.get("type_of_fund_is_not_valid"));
+                    CashShopFunction.openShopPriceSetting(p, args[1]);
                     return false;
                 }
             }
@@ -163,7 +129,7 @@ public class CashShopCommand implements CommandExecutor, TabCompleter {
         }
         if (args.length == 2) {
             if (!args[0].equals("목록") && !args[0].equals("리로드")) {
-                return LegendaryCash.getInstance().shops.keySet().stream().toList();
+                return LegendaryCash.getInstance().shops.keySet().stream().collect(Collectors.toList());
             }
         }
         return null;

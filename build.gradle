@@ -1,17 +1,36 @@
 plugins {
     id 'java'
+    id 'maven-publish'
 }
 
 group 'com.darksoldier1404'
-version = '1.0.1.120'
+version = '1.0.2.122'
+configurations {
+    jar.archiveName = name + '-_v1_19-' + version + '.jar'
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            groupId = 'com.darksoldier1404.dlc'
+            artifactId = 'DP-LegendaryCash'
+            version = '1.19-' + version
+            artifact 'jars/'+ jar.archiveName
+        }
+    }
+    repositories {
+        maven {
+            url "http://dpp.dpnw.site:8081/repository/dpp-releases/"
+            allowInsecureProtocol = true
+        }
+    }
+}
 
 compileJava.options.encoding = 'UTF-8'
 tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
 }
-configurations {
-    jar.archiveName = name + '-_v1_19-' + version + '.jar'
-}
+
 jar {
     destinationDirectory.set(file("$rootDir/jars"))
 }

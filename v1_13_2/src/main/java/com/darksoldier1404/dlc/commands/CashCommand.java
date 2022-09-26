@@ -54,7 +54,7 @@ public class CashCommand implements CommandExecutor, TabCompleter {
                     p.sendMessage(prefix + lang.get("target_player_is_offline"));
                     return false;
                 }
-                if (!CashFunction.isOpen(target)) {
+                if (!CashFunction.isOpen(target) && !p.isOp()) {
                     p.sendMessage(prefix + lang.get("balance_cmd_others_deny"));
                     return false;
                 }
