@@ -112,11 +112,13 @@ public class CashShopFunction {
     public static void setCashPriceWithChat(Player p, int slot) {
         p.closeInventory();
         plugin.currentEditShopItem.put(p.getUniqueId(), Triple.of(plugin.currentEditShop.get(p.getUniqueId()), slot, CurrencyType.CASH));
+        p.sendMessage(plugin.prefix + lang.get("amount_required"));
     }
 
     public static void setMileagePriceWithChat(Player p, int slot) {
         p.closeInventory();
         plugin.currentEditShopItem.put(p.getUniqueId(), Triple.of(plugin.currentEditShop.get(p.getUniqueId()), slot, CurrencyType.MILEAGE));
+        p.sendMessage(plugin.prefix + lang.get("amount_required"));
     }
 
     public static void setShopCashPrice(Player p, int slot, double cash, String name) {
