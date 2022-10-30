@@ -40,7 +40,7 @@ public class CashCommand implements CommandExecutor, TabCompleter {
             if (p.hasPermission("dlc.public")) {
                 p.sendMessage(prefix + lang.get("cash_cmd_balance_public"));
             }
-            if(p.hasPermission("dlc.transfer.cash") || p.hasPermission("dlc.transfer.mileage")) {
+            if (p.hasPermission("dlc.transfer.cash") || p.hasPermission("dlc.transfer.mileage")) {
                 p.sendMessage(prefix + lang.get("cash_cmd_transfer"));
             }
             if (p.hasPermission("dlc.check.cash") || p.hasPermission("dlc.check.mileage")) {
@@ -326,6 +326,14 @@ public class CashCommand implements CommandExecutor, TabCompleter {
                 return false;
             }
         }
+        if(args[0].equals("충전")) {
+            if(!p.hasPermission("dlc.gpu")) {
+                p.sendMessage(prefix + "권한이 없습니다.");
+                return false;
+            }
+            plugin.bapi.sendPaymentURL(p);
+            return false;
+        }
         if (args[0].equals("리로드")) {
             if (!p.hasPermission("dlc.reload")) {
                 p.sendMessage(prefix + "권한이 없습니다.");
@@ -342,9 +350,9 @@ public class CashCommand implements CommandExecutor, TabCompleter {
     public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, @NotNull String[] args) {
         if (args.length == 1) {
             if (sender.isOp()) {
-                return Arrays.asList("주기", "빼기", "설정", "확인", "공개", "송금", "수표", "리로드");
+                return Arrays.asList("주기", "빼기", "설정", "확인", "공개", "송금", "수표", "리로드", "충전");
             }
-            return Arrays.asList("확인", "공개", "송금", "수표");
+            return Arrays.asList("확인", "공개", "송금", "수표", "충전");
         }
         if (args[0].equals("송금") || args[0].equals("주기") || args[0].equals("빼기") || args[0].equals("설정") || args[0].equals("수표")) {
             if (args.length == 2) {
