@@ -18,7 +18,7 @@ build {
 }
 
 group 'github.com/darksoldier1404'
-version = '1.0.2.122'
+version = '1.1.1.142'
 configurations {
     jar.archiveName = 'DP-LegendaryCash-_' + name + '-' + version + '.jar'
 }

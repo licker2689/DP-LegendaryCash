@@ -1,16 +1,21 @@
 package com.darksoldier1404.dlc.functions;
 
 import com.darksoldier1404.dlc.LegendaryCash;
+import com.darksoldier1404.dlc.utils.Utils;
 import com.darksoldier1404.dppc.lang.DLang;
 import com.darksoldier1404.dppc.utils.NBT;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.UUID;
 
 @SuppressWarnings("all")
 public class CashFunction {
@@ -68,13 +73,29 @@ public class CashFunction {
         return plugin.config.getStringList("Settings.mileageCheckItem.Lores");
     }
 
+    public static boolean isOfflinePlayer(UUID uuid) {
+        return Bukkit.getPlayer(uuid) == null;
+    }
+
+    public static boolean isOfflinePlayer(String name) {
+        return Bukkit.getPlayer(name) == null;
+    }
+
+    public static OfflinePlayer getOfflinePlayer(UUID uuid) {
+        return Bukkit.getOfflinePlayer(uuid);
+    }
+
+    public static OfflinePlayer getOfflinePlayer(String name) {
+        return Bukkit.getOfflinePlayer(name);
+    }
+
     public static void getCashCheck(Player p, double cash, int amount) {
-        if(isEnoughCash(p, cash*amount)){
-            if(getMinCashCheck() > cash){
+        if (isEnoughCash(p, cash * amount)) {
+            if (getMinCashCheck() > cash) {
                 p.sendMessage(prefix + lang.getWithArgs("check_cmd_cash_minimum_amount", String.valueOf(getMinCashCheck())));
                 return;
             }
-            if(getCashCheckMaterial() == null){
+            if (getCashCheckMaterial() == null) {
                 p.sendMessage(prefix + lang.get("check_cmd_check_item_is_not_set"));
                 return;
             }
@@ -88,7 +109,7 @@ public class CashFunction {
             im.setDisplayName(ChatColor.translateAlternateColorCodes('&', getCashCheckDisplayName().replace("<cash>", String.valueOf(cash))));
             im.setCustomModelData(getCashCheckCMI());
             List<String> lore = getCashCheckLore();
-            for(int i = 0; i < lore.size(); i++){
+            for (int i = 0; i < lore.size(); i++) {
                 lore.set(i, ChatColor.translateAlternateColorCodes('&', lore.get(i).replace("<cash>", String.valueOf(cash))));
             }
             im.setLore(lore);
@@ -96,14 +117,14 @@ public class CashFunction {
             item = NBT.setDoubleTag(item, "CASH", cash);
             p.getInventory().addItem(item);
             p.sendMessage(prefix + lang.getWithArgs("check_cmd_cash_successfully_printed", String.valueOf(amount)));
-            takeCash(p, cash*amount);
-        }else{
+            takeCash(p, cash * amount);
+        } else {
             p.sendMessage(prefix + lang.get("not_enough_cash"));
         }
     }
 
     public static void getMileageCheck(Player p, double mileage, int amount) {
-        if(isEnoughMileage(p, mileage*amount)) {
+        if (isEnoughMileage(p, mileage * amount)) {
             if (getMinMileageCheck() > mileage) {
                 p.sendMessage(prefix + lang.getWithArgs("check_cmd_mileage_minimum_amount", String.valueOf(getMinMileageCheck())));
                 return;
@@ -122,7 +143,7 @@ public class CashFunction {
             im.setDisplayName(ChatColor.translateAlternateColorCodes('&', getMileageCheckDisplayName().replace("<mileage>", String.valueOf(mileage))));
             im.setCustomModelData(getMileageCheckCMI());
             List<String> lore = getMileageCheckLore();
-            for(int i = 0; i < lore.size(); i++){
+            for (int i = 0; i < lore.size(); i++) {
                 lore.set(i, ChatColor.translateAlternateColorCodes('&', lore.get(i).replace("<mileage>", String.valueOf(mileage))));
             }
             im.setLore(lore);
@@ -131,7 +152,7 @@ public class CashFunction {
             p.getInventory().addItem(item);
             p.sendMessage(prefix + lang.getWithArgs("check_cmd_mileage_successfully_printed", String.valueOf(amount)));
             takeMileage(p, mileage);
-        }else{
+        } else {
             p.sendMessage(prefix + lang.get("not_enough_mileage"));
         }
     }
@@ -140,12 +161,20 @@ public class CashFunction {
         return plugin.ucash.get(p.getUniqueId());
     }
 
+    public static double getCash(OfflinePlayer p) {
+        return Utils.getOfflinePlayerCash(p.getUniqueId());
+    }
+
     public static double getMileage(Player p) {
         return plugin.umileage.get(p.getUniqueId());
     }
 
+    public static double getMileage(OfflinePlayer p) {
+        return Utils.getOfflinePlayerMileage(p.getUniqueId());
+    }
+
     public static void addCash(Player p, double amount) {
-        if(amount < 0){
+        if (amount < 0) {
             p.sendMessage(prefix + lang.get("value_is_negative"));
             return;
         }
@@ -154,8 +183,23 @@ public class CashFunction {
         plugin.ucash.put(p.getUniqueId(), cash);
     }
 
+    public static void addCash(OfflinePlayer p, double amount) {
+        if (amount < 0) {
+            return;
+        }
+        if (p.isOnline()) {
+            addCash(Bukkit.getPlayer(p.getUniqueId()), amount);
+            return;
+        }
+        double cash = Utils.getOfflinePlayerCash(p.getUniqueId());
+        cash += amount;
+        YamlConfiguration data = Utils.getOfflinePlayerData(p.getUniqueId());
+        data.set("Player.CASH", cash);
+        Utils.saveOfflinePlayerData(p.getUniqueId(), data);
+    }
+
     public static void addMileage(Player p, double amount) {
-        if(amount < 0){
+        if (amount < 0) {
             p.sendMessage(prefix + lang.get("value_is_negative"));
             return;
         }
@@ -164,8 +208,23 @@ public class CashFunction {
         plugin.umileage.put(p.getUniqueId(), mileage);
     }
 
+    public static void addMileage(OfflinePlayer p, double amount) {
+        if (amount < 0) {
+            return;
+        }
+        if (p.isOnline()) {
+            addMileage(Bukkit.getPlayer(p.getUniqueId()), amount);
+            return;
+        }
+        double mileage = Utils.getOfflinePlayerMileage(p.getUniqueId());
+        mileage += amount;
+        YamlConfiguration data = Utils.getOfflinePlayerData(p.getUniqueId());
+        data.set("Player.MILEAGE", mileage);
+        Utils.saveOfflinePlayerData(p.getUniqueId(), data);
+    }
+
     public static boolean takeCash(Player p, double amount) {
-        if(amount <= 0){
+        if (amount <= 0) {
             p.sendMessage(prefix + lang.get("value_is_negative"));
             return false;
         }
@@ -174,14 +233,33 @@ public class CashFunction {
             cash -= amount;
             plugin.ucash.put(p.getUniqueId(), cash);
             return true;
-        }else{
+        } else {
             p.sendMessage(prefix + lang.get("not_enough_cash"));
             return false;
         }
     }
 
+    public static boolean takeCash(OfflinePlayer p, double amount) {
+        if (amount <= 0) {
+            return false;
+        }
+        if (p.isOnline()) {
+            return takeCash(Bukkit.getPlayer(p.getUniqueId()), amount);
+        }
+        double cash = Utils.getOfflinePlayerCash(p.getUniqueId());
+        if (cash - amount >= 0) {
+            cash -= amount;
+            YamlConfiguration data = Utils.getOfflinePlayerData(p.getUniqueId());
+            data.set("Player.CASH", cash);
+            Utils.saveOfflinePlayerData(p.getUniqueId(), data);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public static boolean takeMileage(Player p, double amount) {
-        if(amount <= 0){
+        if (amount <= 0) {
             p.sendMessage(prefix + lang.get("value_is_negative"));
             return false;
         }
@@ -190,26 +268,71 @@ public class CashFunction {
             mileage -= amount;
             plugin.umileage.put(p.getUniqueId(), mileage);
             return true;
-        }else{
+        } else {
             p.sendMessage(prefix + lang.get("not_enough_mileage"));
             return false;
         }
     }
 
+    public static boolean takeMileage(OfflinePlayer p, double amount) {
+        if (amount <= 0) {
+            return false;
+        }
+        if (p.isOnline()) {
+            return takeMileage(Bukkit.getPlayer(p.getUniqueId()), amount);
+        }
+        double mileage = Utils.getOfflinePlayerMileage(p.getUniqueId());
+        if (mileage - amount >= 0) {
+            mileage -= amount;
+            YamlConfiguration data = Utils.getOfflinePlayerData(p.getUniqueId());
+            data.set("Player.MILEAGE", mileage);
+            Utils.saveOfflinePlayerData(p.getUniqueId(), data);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public static void setCash(Player p, double amount) {
-        if(amount < 0){
+        if (amount < 0) {
             p.sendMessage(prefix + lang.get("value_is_negative"));
             return;
         }
         plugin.ucash.put(p.getUniqueId(), amount);
     }
 
+    public static void setCash(OfflinePlayer p, double amount) {
+        if (amount < 0) {
+            return;
+        }
+        if (p.isOnline()) {
+            setCash(Bukkit.getPlayer(p.getUniqueId()), amount);
+            return;
+        }
+        YamlConfiguration data = Utils.getOfflinePlayerData(p.getUniqueId());
+        data.set("Player.CASH", amount);
+        Utils.saveOfflinePlayerData(p.getUniqueId(), data);
+    }
+
     public static void setMileage(Player p, double amount) {
-        if(amount < 0){
+        if (amount < 0) {
             p.sendMessage(prefix + lang.get("value_is_negative"));
             return;
         }
         plugin.umileage.put(p.getUniqueId(), amount);
+    }
+
+    public static void setMileage(OfflinePlayer p, double amount) {
+        if (amount < 0) {
+            return;
+        }
+        if (p.isOnline()) {
+            setMileage(Bukkit.getPlayer(p.getUniqueId()), amount);
+            return;
+        }
+        YamlConfiguration data = Utils.getOfflinePlayerData(p.getUniqueId());
+        data.set("Player.MILEAGE", amount);
+        Utils.saveOfflinePlayerData(p.getUniqueId(), data);
     }
 
     public static boolean isEnoughCash(Player p, double amount) {
@@ -223,11 +346,11 @@ public class CashFunction {
     }
 
     public static void sendCash(Player sender, Player receiver, double amount) {
-        if(sender.getUniqueId().equals(receiver.getUniqueId())){
+        if (sender.getUniqueId().equals(receiver.getUniqueId())) {
             sender.sendMessage(prefix + lang.get("transfer_cmd_cant_send_to_me"));
             return;
         }
-        if(amount <= 0){
+        if (amount <= 0) {
             sender.sendMessage(prefix + lang.get("transfer_cmd_amount_too_small"));
             return;
         }
@@ -235,13 +358,35 @@ public class CashFunction {
             addCash(receiver, amount);
             takeCash(sender, amount);
             sender.sendMessage(prefix + lang.getWithArgs("transfer_cmd_cash_successfully_transferred", String.valueOf(amount), receiver.getName()));
-        }else{
+        } else {
+            sender.sendMessage(prefix + lang.get("not_enough_cash"));
+        }
+    }
+
+    public static void sendCash(Player sender, OfflinePlayer receiver, double amount) {
+        if (sender.getUniqueId().equals(receiver.getUniqueId())) {
+            sender.sendMessage(prefix + lang.get("transfer_cmd_cant_send_to_me"));
+            return;
+        }
+        if(receiver.isOnline()) {
+            sendCash(sender, Bukkit.getPlayer(receiver.getUniqueId()), amount);
+            return;
+        }
+        if (amount <= 0) {
+            sender.sendMessage(prefix + lang.get("transfer_cmd_amount_too_small"));
+            return;
+        }
+        if (isEnoughCash(sender, amount)) {
+            addCash(receiver, amount);
+            takeCash(sender, amount);
+            sender.sendMessage(prefix + lang.getWithArgs("transfer_cmd_cash_successfully_transferred", String.valueOf(amount), receiver.getName()));
+        } else {
             sender.sendMessage(prefix + lang.get("not_enough_cash"));
         }
     }
 
     public static void sendMileage(Player sender, Player receiver, double amount) {
-        if(sender.getUniqueId().equals(receiver.getUniqueId())){
+        if (sender.getUniqueId().equals(receiver.getUniqueId())) {
             sender.sendMessage(prefix + lang.get("transfer_cmd_cant_send_to_me"));
             return;
         }
@@ -249,7 +394,25 @@ public class CashFunction {
             addMileage(receiver, amount);
             takeMileage(sender, amount);
             sender.sendMessage(prefix + lang.getWithArgs("transfer_cmd_mileage_successfully_transferred", String.valueOf(amount), receiver.getName()));
-        }else{
+        } else {
+            sender.sendMessage(prefix + lang.get("not_enough_mileage"));
+        }
+    }
+
+    public static void sendMileage(Player sender, OfflinePlayer receiver, double amount) {
+        if (sender.getUniqueId().equals(receiver.getUniqueId())) {
+            sender.sendMessage(prefix + lang.get("transfer_cmd_cant_send_to_me"));
+            return;
+        }
+        if(receiver.isOnline()) {
+            sendMileage(sender, Bukkit.getPlayer(receiver.getUniqueId()), amount);
+            return;
+        }
+        if (isEnoughMileage(sender, amount)) {
+            addMileage(receiver, amount);
+            takeMileage(sender, amount);
+            sender.sendMessage(prefix + lang.getWithArgs("transfer_cmd_mileage_successfully_transferred", String.valueOf(amount), receiver.getName()));
+        } else {
             sender.sendMessage(prefix + lang.get("not_enough_mileage"));
         }
     }
@@ -266,6 +429,10 @@ public class CashFunction {
 
     public static boolean isOpen(Player p) {
         return plugin.udata.get(p.getUniqueId()).getBoolean("Player.SHOW");
+    }
+
+    public static boolean isOpen(OfflinePlayer p) {
+        return Utils.getOfflinePlayerData(p.getUniqueId()).getBoolean("Player.SHOW");
     }
 
     public static void setOpen(Player p, boolean b) {

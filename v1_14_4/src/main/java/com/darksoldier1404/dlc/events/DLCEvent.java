@@ -8,6 +8,7 @@ import com.darksoldier1404.dlc.utils.Utils;
 import com.darksoldier1404.dppc.api.inventory.DInventory;
 import com.darksoldier1404.dppc.lang.DLang;
 import com.darksoldier1404.dppc.utils.NBT;
+import com.darksoldier1404.dppc.utils.Tuple;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -20,7 +21,6 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.EquipmentSlot;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.HashMap;
@@ -52,22 +52,23 @@ public class DLCEvent implements Listener {
             String name = plugin.currentEditShopItem.get(p.getUniqueId()).getA();
             int slot = plugin.currentEditShopItem.get(p.getUniqueId()).getB();
             CurrencyType type = plugin.currentEditShopItem.get(p.getUniqueId()).getC();
+            int page = plugin.currentEditShopItem.get(p.getUniqueId()).getD();
             try {
                 double price = Double.parseDouble(msg);
                 if (type == CurrencyType.CASH) {
-                    CashShopFunction.setShopCashPrice(p, slot, price, name);
+                    CashShopFunction.setShopCashPrice(p, slot, price, name, page);
                 } else {
-                    CashShopFunction.setShopMileagePrice(p, slot, price, name);
+                    CashShopFunction.setShopMileagePrice(p, slot, price, name, page);
                 }
                 plugin.currentEditShopItem.remove(p.getUniqueId());
                 plugin.currentEditShop.remove(p.getUniqueId());
-                CashShopFunction.openShopPriceSetting(p, name);
+                CashShopFunction.openShopPriceSetting(p, name, page);
                 return;
             } catch (Exception ex) {
                 p.sendMessage(plugin.prefix + lang.get("amount_required"));
                 plugin.currentEditShopItem.remove(p.getUniqueId());
                 plugin.currentEditShop.remove(p.getUniqueId());
-                CashShopFunction.openShopPriceSetting(p, name);
+                CashShopFunction.openShopPriceSetting(p, name, page);
                 return;
             }
         }
@@ -85,10 +86,21 @@ public class DLCEvent implements Listener {
         if (e.getInventory() instanceof DInventory) {
             if (!plugin.currentEditShop.containsKey(p.getUniqueId())) return;
             DInventory di = (DInventory) e.getInventory();
-            if(di.getObj() != null) return;
             if (di.isValidHandler(plugin)) {
-                if (e.getView().getTitle().equals(lang.getWithArgs("shop_display_gui_title", plugin.currentEditShop.get(p.getUniqueId())))) {
-                    CashShopFunction.saveShopShowCase(p, (Inventory) di);
+                if (di.getObj() != null) {
+                    if(di.getObj().equals("priceSetting")) {
+                        if(!plugin.currentEditShopItem.containsKey(p.getUniqueId())) {
+                            plugin.currentEditShop.remove(p.getUniqueId());
+                            plugin.currentEditShopItem.remove(p.getUniqueId());
+                            return;
+                        }
+                    }
+                    if (di.getObj() instanceof Tuple<?, ?>) {
+                        Tuple<String, Integer> tpl = (Tuple<String, Integer>) di.getObj();
+                        if (tpl.getA().equals(plugin.currentEditShop.get(p.getUniqueId()))) {
+                            CashShopFunction.saveShopShowCase(p, di, tpl.getB());
+                        }
+                    }
                 }
             }
         }
@@ -101,26 +113,84 @@ public class DLCEvent implements Listener {
         if (e.getClickedInventory() instanceof DInventory) {
             DInventory di = (DInventory) e.getClickedInventory();
             if (di.isValidHandler(plugin)) {
-                e.setCancelled(true);
+                if (e.getCurrentItem() == null) return;
                 if (di.getObj() != null) {
                     if (di.getObj().equals("priceSetting")) {
+                        e.setCancelled(true);
+                        if (NBT.hasTagKey(e.getCurrentItem(), "dlc_display")) {
+                            return;
+                        }
+                        if (NBT.hasTagKey(e.getCurrentItem(), "dlc_page")) return;
+                        if (NBT.hasTagKey(e.getCurrentItem(), "dlc_prev")) {
+                            di.prevPage();
+                            return;
+                        }
+                        if (NBT.hasTagKey(e.getCurrentItem(), "dlc_next")) {
+                            di.nextPage();
+                            return;
+                        }
                         if (e.getClick() == ClickType.LEFT) {
-                            CashShopFunction.setCashPriceWithChat(p, e.getSlot());
+                            CashShopFunction.setCashPriceWithChat(p, e.getSlot(), di.getCurrentPage());
                             return;
                         }
                         if (e.getClick() == ClickType.RIGHT) {
-                            CashShopFunction.setMileagePriceWithChat(p, e.getSlot());
+                            CashShopFunction.setMileagePriceWithChat(p, e.getSlot(), di.getCurrentPage());
                         }
                         return;
                     }
                 }
                 if (plugin.currentEditShop.containsKey(e.getWhoClicked().getUniqueId())) return;
+                if (di.getObj() != null && di.getObj().equals("confirmBuyWithCash")) {
+                    e.setCancelled(true);
+                    if (NBT.hasTagKey(e.getCurrentItem(), "dlc_yes")) {
+                        ItemStack item = di.getItem(13);
+                        CashShopFunction.buyWithCash(p, item);
+                        p.openInventory(CashShopFunction.prevInvs.get(p.getUniqueId()));
+                        CashShopFunction.prevInvs.remove(p.getUniqueId());
+                        return;
+                    }
+                    if (NBT.hasTagKey(e.getCurrentItem(), "dlc_cancel")) {
+                        p.openInventory(CashShopFunction.prevInvs.get(p.getUniqueId()));
+                        CashShopFunction.prevInvs.remove(p.getUniqueId());
+                        return;
+                    }
+                    return;
+                }
+                if (di.getObj() != null && di.getObj().equals("confirmBuyWithMileage")) {
+                    e.setCancelled(true);
+                    if (NBT.hasTagKey(e.getCurrentItem(), "dlc_yes")) {
+                        ItemStack item = di.getItem(13);
+                        CashShopFunction.buyWithMileage(p, item);
+                        p.openInventory(CashShopFunction.prevInvs.get(p.getUniqueId()));
+                        CashShopFunction.prevInvs.remove(p.getUniqueId());
+                        return;
+                    }
+                    if (NBT.hasTagKey(e.getCurrentItem(), "dlc_cancel")) {
+                        p.openInventory(CashShopFunction.prevInvs.get(p.getUniqueId()));
+                        CashShopFunction.prevInvs.remove(p.getUniqueId());
+                        return;
+                    }
+                    return;
+                }
+                e.setCancelled(true);
+                if (NBT.hasTagKey(e.getCurrentItem(), "dlc_display")) {
+                    return;
+                }
+                if (NBT.hasTagKey(e.getCurrentItem(), "dlc_page")) return;
+                if (NBT.hasTagKey(e.getCurrentItem(), "dlc_prev")) {
+                    di.prevPage();
+                    return;
+                }
+                if (NBT.hasTagKey(e.getCurrentItem(), "dlc_next")) {
+                    di.nextPage();
+                    return;
+                }
                 if (e.getClick() == ClickType.LEFT) {
-                    CashShopFunction.buyWithCash(p, e.getCurrentItem());
+                    CashShopFunction.confirmBuyWithCash(p, e.getCurrentItem(), di);
                     return;
                 }
                 if (e.getClick() == ClickType.RIGHT) {
-                    CashShopFunction.buyWithMileage(p, e.getCurrentItem());
+                    CashShopFunction.confirmBuyWithMileage(p, e.getCurrentItem(), di);
                 }
             }
         }
