@@ -173,7 +173,13 @@ public class CashCommand implements CommandExecutor, TabCompleter {
                             p.sendMessage(prefix + "권한이 없습니다.");
                             return false;
                         }
-                        CashFunction.getCashCheck(p, Double.parseDouble(args[2]), Integer.parseInt(args[3]));
+                        try{
+                            CashFunction.getCashCheck(p, Double.parseDouble(args[2]), Integer.parseInt(args[3]));
+                            return false;
+                        }catch (Exception e){
+                            p.sendMessage(prefix + "금액과 수량은 숫자만 입력해주세요.");
+                            return false;
+                        }
                     } else {
                         p.sendMessage(prefix + lang.get("check_cmd_cant_use"));
                     }
@@ -185,7 +191,13 @@ public class CashCommand implements CommandExecutor, TabCompleter {
                             p.sendMessage(prefix + "권한이 없습니다.");
                             return false;
                         }
-                        CashFunction.getMileageCheck(p, Double.parseDouble(args[2]), Integer.parseInt(args[3]));
+                        try{
+                            CashFunction.getMileageCheck(p, Double.parseDouble(args[2]), Integer.parseInt(args[3]));
+                            return false;
+                        }catch (Exception e){
+                            p.sendMessage(prefix + "금액과 수량은 숫자만 입력해주세요.");
+                            return false;
+                        }
                     } else {
                         p.sendMessage(prefix + lang.get("check_cmd_cant_use"));
                     }
