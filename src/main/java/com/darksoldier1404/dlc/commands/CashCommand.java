@@ -332,6 +332,10 @@ public class CashCommand implements CommandExecutor, TabCompleter {
                 p.sendMessage(prefix + "권한이 없습니다.");
                 return false;
             }
+            if(plugin.bapi == null) {
+                p.sendMessage(prefix + "지금은 사용이 불가능한 명령어 입니다.");
+                return false;
+            }
             plugin.bapi.sendPaymentURL(p);
             return false;
         }

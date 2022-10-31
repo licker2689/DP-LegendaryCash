@@ -9,11 +9,13 @@ import com.darksoldier1404.dlc.utils.ShopConfigUtil;
 import com.darksoldier1404.dlc.utils.Utils;
 import com.darksoldier1404.dppc.DPPCore;
 import com.darksoldier1404.dppc.api.benta.BentaAPI;
+import com.darksoldier1404.dppc.api.logger.DLogger;
 import com.darksoldier1404.dppc.api.placeholder.DPHManager;
 import com.darksoldier1404.dppc.api.placeholder.DPlaceHolder;
 import com.darksoldier1404.dppc.lang.DLang;
 import com.darksoldier1404.dppc.utils.ConfigUtils;
 import com.darksoldier1404.dppc.utils.Quadruple;
+import okhttp3.internal.http2.Settings;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -38,6 +40,7 @@ public class LegendaryCash extends JavaPlugin {
     public DLang lang;
     public DPHManager dphm;
     public BentaAPI bapi;
+    public static DLogger logger;
 
     public static LegendaryCash getInstance() {
         return plugin;
@@ -69,6 +72,11 @@ public class LegendaryCash extends JavaPlugin {
         if(config.getBoolean("Settings.Benta.useBenta")) {
             bapi = new BentaAPI(config.getString("Settings.Benta.Token"), plugin, config.getString("Settings.Benta.Title"), prefix);
             plugin.getServer().getPluginManager().registerEvents(new BentaEvent(), plugin);
+        }
+        if(config.getBoolean("Settings.Log.useLog")) {
+            logger = new DLogger(plugin, config.getBoolean("Settings.Log.useConsoleLog"), (byte) config.getInt("Settings.Log.logLevel"));
+            long period = config.getLong("Settings.Log.autoSaveInterval");
+            logger.initAutoSave(20*60, period, null, null,plugin.getDataFolder()+"/"+config.getString("Settings.Log.savePath"), "DLCLog", true);
         }
     }
 
