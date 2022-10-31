@@ -13,6 +13,7 @@ import org.bukkit.event.Listener;
 
 import java.util.UUID;
 
+@SuppressWarnings("all")
 public class BentaEvent implements Listener {
     private final LegendaryCash plugin = LegendaryCash.getInstance();
     @EventHandler
@@ -22,6 +23,9 @@ public class BentaEvent implements Listener {
             if(op.isOnline()) {
                 Player p = Bukkit.getPlayer(op.getUniqueId());
                 p.sendMessage(plugin.prefix + "§c컬처랜드 결제에 실패했습니다.");
+                if(plugin.logger != null) {
+                    plugin.logger.log(p.getName() + "님이 컬처랜드 결제에 실패했습니다.");
+                }
             }
         }
     }
@@ -35,9 +39,14 @@ public class BentaEvent implements Listener {
                 p.sendMessage(plugin.prefix + "§a컬처랜드 결제에 성공했습니다.");
                 p.sendMessage(plugin.prefix + "§a금액 : " + e.getPaidAmount() + " 원");
                 CashFunction.addCash(p, e.getPaidAmount());
+                if(plugin.logger != null) {
+                    plugin.logger.log(p.getName() + "님이 컬처랜드 결제에 성공했습니다.");
+                }
             }else{
                 CashFunction.addCash(op, e.getPaidAmount());
-                System.out.println("컬처랜드 결제 성공 : " + op.getName() + " / " + e.getPaidAmount());
+                if (plugin.logger != null) {
+                    plugin.logger.log(op.getName() + "님이 컬처랜드 결제에 성공했습니다. (유저 오프라인)");
+                }
             }
         }
     }
@@ -51,9 +60,14 @@ public class BentaEvent implements Listener {
                 p.sendMessage(plugin.prefix + "§a입금에 성공했습니다.");
                 p.sendMessage(plugin.prefix + "§a금액 : " + e.getPaidAmount() + " 원");
                 CashFunction.addCash(p, e.getPaidAmount());
+                if(plugin.logger != null) {
+                    plugin.logger.log(p.getName() + "님이 입금에 성공했습니다.");
+                }
             }else{
                 CashFunction.addCash(op, e.getPaidAmount());
-                System.out.println("입금 성공 : " + op.getName() + " / " + e.getPaidAmount());
+                if (plugin.logger != null) {
+                    plugin.logger.log(op.getName() + "님이 입금에 성공했습니다. (유저 오프라인)");
+                }
             }
         }
     }

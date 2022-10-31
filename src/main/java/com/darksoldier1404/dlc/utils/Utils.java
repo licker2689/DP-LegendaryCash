@@ -211,5 +211,15 @@ public class Utils {
             plugin.config.set("Settings.Benta.Title", "결제시 표시될 타이틀을 입력해주세요.");
             ConfigUtils.savePluginConfig(plugin, plugin.config);
         }
+        if(plugin.config.get("Settings.Log") == null) {
+            plugin.config.set("Settings.Log.useLog", false);
+            plugin.config.set("Settings.Log.logLevel", -1);
+            plugin.config.set("Settings.Log.useConsoleLog", false);
+            plugin.config.set("Settings.Log.autoSaveInterval", 20*600);
+            plugin.config.set("Settings.Log.savePath", "logs");
+            ConfigUtils.savePluginConfig(plugin, plugin.config);
+        }
     }
+
+
 }

@@ -151,7 +151,7 @@ public class CashFunction {
             item = NBT.setDoubleTag(item, "MILEAGE", mileage);
             p.getInventory().addItem(item);
             p.sendMessage(prefix + lang.getWithArgs("check_cmd_mileage_successfully_printed", String.valueOf(amount)));
-            takeMileage(p, mileage);
+            takeMileage(p, mileage * amount);
         } else {
             p.sendMessage(prefix + lang.get("not_enough_mileage"));
         }

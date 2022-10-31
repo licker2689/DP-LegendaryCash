@@ -78,11 +78,12 @@ public class CashShopFunction {
         plugin.currentEditShop.put(p.getUniqueId(), name);
         DInventory inv = new DInventory(null, getShopTitle(name), 54, true, plugin);
         inv.setObj("priceSetting");
-        Map<Integer, ItemStack> items = new HashMap<>();
+        Map<Integer/*page*/, Map<Integer/*slot*/, ItemStack>> items = new HashMap<>();
         YamlConfiguration shop = plugin.shops.get(name);
         int ic = 0;
         if (shop.getConfigurationSection("Shop.Pages") != null) {
             for (String page : shop.getConfigurationSection("Shop.Pages").getKeys(false)) {
+                Map<Integer, ItemStack> pageItems = new HashMap<>();
                 for (int i = 0; i < 54; i++) {
                     ItemStack item = shop.getItemStack("Shop.Pages." + page + ".Items." + i);
                     if (item == null) {
@@ -93,7 +94,7 @@ public class CashShopFunction {
                         ItemMeta im = item.getItemMeta();
                         im.setDisplayName("§f");
                         item.setItemMeta(im);
-                        items.put(ic, item.clone());
+                        pageItems.put(ic, item.clone());
                         ic++;
                         continue;
                     }
@@ -103,17 +104,17 @@ public class CashShopFunction {
                         ItemMeta im = item.getItemMeta();
                         im.setDisplayName(displayName);
                         item.setItemMeta(im);
-                        items.put(ic, item.clone());
+                        pageItems.put(ic, item.clone());
                         ic++;
                         continue;
                     }
-                    if(NBT.hasTagKey(item, "dlc_prev")) {
-                        items.put(ic, item.clone());
+                    if (NBT.hasTagKey(item, "dlc_prev")) {
+                        pageItems.put(ic, item.clone());
                         ic++;
                         continue;
                     }
-                    if(NBT.hasTagKey(item, "dlc_next")) {
-                        items.put(ic, item.clone());
+                    if (NBT.hasTagKey(item, "dlc_next")) {
+                        pageItems.put(ic, item.clone());
                         ic++;
                         continue;
                     }
@@ -142,23 +143,25 @@ public class CashShopFunction {
                     ItemMeta rm = r.getItemMeta();
                     rm.setLore(lore);
                     r.setItemMeta(rm);
-                    items.put(ic, r.clone());
+                    pageItems.put(ic, r.clone());
                     ic++;
                 }
+                items.put(Integer.parseInt(page), pageItems);
             }
         }
         int maxPages = shop.getInt("Shop.MaxPage");
-        int count = 0;
-        ItemStack[] contents = new ItemStack[54];
         inv.setPages(maxPages);
-        for (int page = 0; page <= maxPages; page++) {
+        items.forEach((page, pageItems) -> {
+            ItemStack[] contents = new ItemStack[54];
             for (int i = 0; i < 54; i++) {
-                contents[i] = items.get(count);
-                count++;
+                ItemStack item = pageItems.get(i);
+                if (item != null) {
+                    contents[i] = item;
+                }
             }
             inv.setPageContent(page, contents);
             contents = new ItemStack[54];
-        }
+        });
         inv.setUsePageTools(false);
         inv.update();
         inv.setCurrentPage(prevPage);
@@ -333,6 +336,10 @@ public class CashShopFunction {
         r.setItemMeta(im);
         p.getInventory().addItem(r);
         p.sendMessage(prefix + lang.get("shop_buy_successful"));
+        if (plugin.logger != null) {
+            plugin.logger.log("아이템 구매 완료, 구매자 : " + p.getName() + ", 구매 가격 : " + cash + "캐시");
+            plugin.logger.log(item);
+        }
     }
 
     public static void buyWithMileage(Player p, ItemStack item) {
@@ -362,6 +369,10 @@ public class CashShopFunction {
         r.setItemMeta(im);
         p.getInventory().addItem(r);
         p.sendMessage(prefix + lang.get("shop_buy_successful"));
+        if (plugin.logger != null) {
+            plugin.logger.log("아이템 구매 완료, 구매자 : " + p.getName() + ", 구매 가격 : " + mileage + "마일리지");
+            plugin.logger.log(item);
+        }
     }
 
     public static void openShop(Player p, String name) {
@@ -370,11 +381,12 @@ public class CashShopFunction {
             return;
         }
         DInventory inv = new DInventory(null, getShopTitle(name), 54, true, plugin);
-        Map<Integer, ItemStack> items = new HashMap<>();
+        Map<Integer/*page*/, Map<Integer/*slot*/, ItemStack>> items = new HashMap<>();
         YamlConfiguration shop = plugin.shops.get(name);
         int ic = 0;
         if (shop.getConfigurationSection("Shop.Pages") != null) {
             for (String page : shop.getConfigurationSection("Shop.Pages").getKeys(false)) {
+                Map<Integer, ItemStack> pageItems = new HashMap<>();
                 for (int i = 0; i < 54; i++) {
                     ItemStack item = shop.getItemStack("Shop.Pages." + page + ".Items." + i);
                     if (item == null) {
@@ -385,7 +397,7 @@ public class CashShopFunction {
                         ItemMeta im = item.getItemMeta();
                         im.setDisplayName("§f");
                         item.setItemMeta(im);
-                        items.put(ic, item.clone());
+                        pageItems.put(ic, item.clone());
                         ic++;
                         continue;
                     }
@@ -395,17 +407,17 @@ public class CashShopFunction {
                         ItemMeta im = item.getItemMeta();
                         im.setDisplayName(displayName);
                         item.setItemMeta(im);
-                        items.put(ic, item.clone());
+                        pageItems.put(ic, item.clone());
                         ic++;
                         continue;
                     }
-                    if(NBT.hasTagKey(item, "dlc_prev")) {
-                        items.put(ic, item.clone());
+                    if (NBT.hasTagKey(item, "dlc_prev")) {
+                        pageItems.put(ic, item.clone());
                         ic++;
                         continue;
                     }
-                    if(NBT.hasTagKey(item, "dlc_next")) {
-                        items.put(ic, item.clone());
+                    if (NBT.hasTagKey(item, "dlc_next")) {
+                        pageItems.put(ic, item.clone());
                         ic++;
                         continue;
                     }
@@ -434,23 +446,25 @@ public class CashShopFunction {
                     ItemMeta rm = r.getItemMeta();
                     rm.setLore(lore);
                     r.setItemMeta(rm);
-                    items.put(ic, r.clone());
+                    pageItems.put(ic, r.clone());
                     ic++;
                 }
             }
         }
         int maxPages = shop.getInt("Shop.MaxPage");
         int count = 0;
-        ItemStack[] contents = new ItemStack[54];
         inv.setPages(maxPages);
-        for (int page = 0; page <= maxPages; page++) {
+        items.forEach((page, pageItems) -> {
+            ItemStack[] contents = new ItemStack[54];
             for (int i = 0; i < 54; i++) {
-                contents[i] = items.get(count);
-                count++;
+                ItemStack item = pageItems.get(i);
+                if (item != null) {
+                    contents[i] = item;
+                }
             }
             inv.setPageContent(page, contents);
             contents = new ItemStack[54];
-        }
+        });
         inv.setUsePageTools(false);
         inv.update();
         p.openInventory(inv);
