@@ -1,11 +1,11 @@
 Settings:
-  prefix: "&f[ &e캐시 &f] "
+  prefix: '&f[ &e캐시 &f] '
 
   # 언어 파일 | Language file
   # 경로 | Path: plugins/DP-LegendaryCash/lang/
-  Lang: "Korean"
+  Lang: Korean
 
-  # [ ---------- 수표 기능 ---------- ]
+    # [ ---------- 수표 기능 ---------- ]
 
   # 캐시 수표화 기능 사용 여부
   useCashCheck: false
@@ -19,18 +19,29 @@ Settings:
   # 플레이스 홀더 : <cash> <mileage>
   cashCheckItem:
     # 수표 아이템 타입  (변경전에 만들어진 수표는 변경후에도 사용 가능합니다.) 참고 : https://papermc.io/javadocs/paper/1.17/org/bukkit/Material.html
-    ItemType: "PAPER"
+    ItemType: PAPER
     # 수표 아이템 CustomModelData (리소스팩에 사용되는 커스텀 모델 데이터 아이디 입니다.)
     CustomModelData: 0
-    DisplayName: "&f[ &6수표 &f] &e<cash> 캐시"
+    DisplayName: '&f[ &6수표 &f] &e<cash> 캐시'
     Lores:
-      - "&f"
-      - "&e우클릭 하여 <cash> 캐시를 획득합니다."
+      - '&f'
+      - '&e우클릭 하여 <cash> 캐시를 획득합니다.'
 
   mileageCheckItem:
-    ItemType: "PAPER"
+    ItemType: PAPER
     CustomModelData: 0
-    DisplayName: "&f[ &6수표 &f] &e<mileage> 마일리지"
+    DisplayName: '&f[ &6수표 &f] &e<mileage> 마일리지'
     Lores:
-      - "&f"
-      - "&e우클릭 하여 <mileage> 마일리지를 획득합니다."
+      - '&f'
+      - '&e우클릭 하여 <mileage> 마일리지를 획득합니다.'
+
+  Benta:
+    useBenta: false
+    Token: ""
+    Title: 테스트 결제
+  Log:
+    useLog: false
+    logLevel: 3
+    useConsoleLog: false
+    autoSaveInterval: 1200
+    savePath: logs
