@@ -18,7 +18,7 @@ build {
 }
 
 group 'github.com/darksoldier1404'
-version = '1.1.1.146'
+version = '1.1.1.149'
 configurations {
     jar.archiveName = 'DP-LegendaryCash-_' + name + '-' + version + '.jar'
 }
@@ -46,7 +46,16 @@ jar{
 repositories {
     mavenCentral()
     maven {
-        url "http://dpp.dpnw.site:8081/repository/maven-public/"
+            url "http://feather-s.kr:8083/repository/maven-public/"
+            allowInsecureProtocol = true
+    }    
+    maven {
+            url "http://feather-s.kr:8083/repository/dpp-releases/"
+            allowInsecureProtocol = true
+    }
+
+    maven {
+        url "http://licker.ddns.net:8081/repository/dpp/"
         allowInsecureProtocol = true
     }
 }

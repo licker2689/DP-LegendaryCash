@@ -10,7 +10,7 @@ tasks.withType(JavaCompile) {
 }
 
 group 'github.com/darksoldier1404'
-version = '1.1.1.146'
+version = '1.1.1.149'
 configurations {
     jar.archiveName = 'DP-LegendaryCash-_' + name + '-' + version + '.jar'
 }
@@ -38,11 +38,16 @@ jar{
 repositories {
     mavenCentral()
     maven {
-        url "http://dpp.dpnw.site:8081/repository/maven-public/"
-        allowInsecureProtocol = true
-    }
+            url "http://feather-s.kr:8083/repository/maven-public/"
+            allowInsecureProtocol = true
+    }    
     maven {
-        url "http://dpp.dpnw.site:8081/repository/maven-releases/"
+            url "http://feather-s.kr:8083/repository/dpp-releases/"
+            allowInsecureProtocol = true
+    }
+
+    maven {
+        url "http://licker.ddns.net:8081/repository/dpp/"
         allowInsecureProtocol = true
     }
 }
@@ -53,6 +58,7 @@ dependencies {
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
     compileOnly 'org.bukkit.craftbukkit:craftbukkit:R0.1:1.17.1'
     compileOnly 'org.spigotmc:spigot-api:R0.1:1.17.1'
+    compileOnly 'org.spigotmc:spigot:R0.1:1.17.1'
     compileOnly 'com.darksoldier1404.dppc:DPP-Core:1.17.1-SNAPSHOT'
 }
 

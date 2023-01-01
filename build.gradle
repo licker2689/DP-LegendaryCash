@@ -4,7 +4,7 @@ plugins {
 }
 
 group 'com.darksoldier1404'
-version = '1.1.1.146'
+version = '1.1.1.149'
 configurations {
     jar.archiveName = name + '-_v1_19-' + version + '.jar'
 }
@@ -80,20 +80,32 @@ task DS_BUILD {
 repositories {
     mavenCentral()
     maven {
-        url "http://dpp.dpnw.site:8081/repository/maven-public/"
+            url "http://feather-s.kr:8083/repository/maven-public/"
+            allowInsecureProtocol = true
+    }    
+    maven {
+            url "http://feather-s.kr:8083/repository/dpp-releases/"
+            allowInsecureProtocol = true
+    }
+
+    maven {
+        url "http://licker.ddns.net:8081/repository/dpp/"
         allowInsecureProtocol = true
     }
     maven {
-        url "http://dpp.dpnw.site:8081/repository/maven-releases/"
+        url "https://repo.enonic.com/public/"
         allowInsecureProtocol = true
+
     }
 }
 
 dependencies {
     implementation 'org.jetbrains:annotations:23.0.0'
+    implementation 'com.google.common:google-collect:0.5'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
-    compileOnly 'org.bukkit.craftbukkit:craftbukkit:R0.1:1.19'
-    compileOnly 'org.spigotmc:spigot-api:R0.1:1.19'
-    compileOnly 'com.darksoldier1404.dppc:DPP-Core:1.19-SNAPSHOT'
+    compileOnly 'org.bukkit.craftbukkit:craftbukkit:R0.1:1.19.3'
+    compileOnly 'org.spigotmc:spigot-api:R0.1:1.19.3'
+    compileOnly 'org.spigotmc:spigot:R0.1:1.19.3'
+    compileOnly 'com.darksoldier1404.dppc:DPP-Core:1.19.3-SNAPSHOT'
 }
