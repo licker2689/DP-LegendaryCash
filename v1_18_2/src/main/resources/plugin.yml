@@ -1,0 +1,12 @@
+name: DP-LegendaryCash
+version: 1.1.1.149
+main: com.darksoldier1404.dlc.LegendaryCash
+api-version: 1.18
+authors: [ DEAD_POOLIO_ ]
+depend:
+  - DPP-Core
+commands:
+  캐시:
+    aliases: [ cash ]
+  캐시상점:
+    aliases: [ cashshop ]
